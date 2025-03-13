@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Korbin'sFolder/Script.meta
 guid: f5b3392af009d244ebdb517c9db85c54
+========
+guid: 8e7e8f5a82a3a134e91c54efd2274ea9
+>>>>>>>> 87cd62b541a8469e0028b5cb0f24eb7c018acf27:Assets/TextMesh Pro/Documentation.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
