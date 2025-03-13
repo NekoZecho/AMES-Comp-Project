@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using JetBrains.Annotations;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class Player_Movement : MonoBehaviour
     public float slopeAngleMax;
     private RaycastHit slopehit;
     private bool exitingSlope;
+    [HideInInspector]
+    public float dAngle;
 
     public Transform orientation;
 
@@ -57,12 +60,6 @@ public class Player_Movement : MonoBehaviour
         crouching,
         air
     }
-
-    [Header("Debugging")]
-    [SerializeField]
-    TMP_Text speed;
-    [SerializeField]
-    TMP_Text slope;
 
     private void Start()
     {
@@ -90,7 +87,6 @@ public class Player_Movement : MonoBehaviour
         {
             rb.drag = 0;
         }
-        speed.text = "Speed: " + rb.velocity.magnitude.ToString("F2");
     }
 
     private void FixedUpdate()
@@ -147,6 +143,7 @@ public class Player_Movement : MonoBehaviour
         else
         {
             mState = MovementState.air;        }
+        
     }
 
     private void MovePlayer()
@@ -176,8 +173,9 @@ public class Player_Movement : MonoBehaviour
         if (OnSlope() && !exitingSlope)
         {
             if (rb.velocity.magnitude > moveSpeed)
+            {
                 rb.velocity = rb.velocity.normalized * moveSpeed;
-            
+            }           
         }
 
         else
@@ -213,7 +211,7 @@ public class Player_Movement : MonoBehaviour
         if (Physics.Raycast(transform.position, Vector3.down, out slopehit, playerHeight * 0.5f + 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopehit.normal);
-            slope.text = "Slope: " + angle.ToString("F1");
+            dAngle = angle;
             return angle < slopeAngleMax && angle != 0;
         }
 
