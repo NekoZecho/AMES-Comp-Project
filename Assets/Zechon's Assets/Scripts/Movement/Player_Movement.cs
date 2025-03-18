@@ -24,13 +24,15 @@ public class Player_Movement : MonoBehaviour
     public float crouchSpeed;
     public float crouchScaleY;
     private float startScaleY;
+    private bool canUncrouch;
+    private bool crouching;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
 
-    [Header("Ground Check")]
+    [Header("Ground & Wall Check")]
     public float playerHeight;
     public LayerMask theGround;
     bool grounded;
@@ -42,6 +44,8 @@ public class Player_Movement : MonoBehaviour
     [HideInInspector]
     public float dAngle;
 
+
+    [Header("Orientation")]
     public Transform orientation;
 
     float horizInput;
@@ -69,6 +73,8 @@ public class Player_Movement : MonoBehaviour
         jumpReady = true;
 
         startScaleY = transform.localScale.y;
+
+
     }
 
     private void Update()
@@ -78,6 +84,8 @@ public class Player_Movement : MonoBehaviour
         MyInput();
         ControlSpeed();
         MStateHandler();
+        uncrouchCheck();
+
 
         if (grounded)
         {
@@ -112,17 +120,19 @@ public class Player_Movement : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchScaleY, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            crouching = true;
         }
 
-        if (Input.GetKeyUp(crouchKey))
+        if (!Input.GetKey(crouchKey) && canUncrouch)
         {
             transform.localScale = new Vector3(transform.localScale.x, startScaleY, transform.localScale.z);
+            crouching = false;
         }
     }
 
     private void MStateHandler()
     {
-        if (Input.GetKey(crouchKey))
+        if (Input.GetKey(crouchKey) || crouching)
         {
             mState = MovementState.crouching;
             moveSpeed = crouchSpeed;
@@ -134,7 +144,7 @@ public class Player_Movement : MonoBehaviour
             moveSpeed = sprintSpeed;
         }
 
-        else if (grounded)
+        else if (grounded && !crouching)
         {
             mState = MovementState.walking;
             moveSpeed = walkSpeed;
@@ -166,6 +176,8 @@ public class Player_Movement : MonoBehaviour
             rb.AddForce(moveDirection.normalized *  moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         rb.useGravity = !OnSlope();
+
+        Debug.DrawRay(transform.position, moveDirection, Color.yellow);
     }
 
     private void ControlSpeed()
@@ -222,4 +234,14 @@ public class Player_Movement : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopehit.normal).normalized;
     }
+
+    private void uncrouchCheck()
+    {
+        if (Physics.Raycast(transform.position, Vector3.up, playerHeight * 0.5f + 0.3f))
+            canUncrouch = false;
+        
+        else
+            canUncrouch = true;
+    }
+
 }
