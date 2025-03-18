@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using JetBrains.Annotations;
+using Unity.Burst.CompilerServices;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -34,8 +35,17 @@ public class Player_Movement : MonoBehaviour
 
     [Header("Ground & Wall Check")]
     public float playerHeight;
-    public LayerMask theGround;
+    public LayerMask theEnvironment;
     bool grounded;
+
+    [Header("Collide And Slide")]
+    [SerializeField]
+    int maxBounces = 5;
+    [SerializeField]
+    float skinThickness = .015f;
+    Bounds bounds;
+    [SerializeField]
+    GameObject Player_Collider;
 
     [Header("Slope Handling")]
     public float slopeAngleMax;
@@ -73,13 +83,14 @@ public class Player_Movement : MonoBehaviour
         jumpReady = true;
 
         startScaleY = transform.localScale.y;
-
-
     }
 
     private void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, theGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, theEnvironment);
+
+        bounds = Player_Collider.GetComponent<Collider>().bounds;
+        bounds.Expand(-2 * skinThickness);
 
         MyInput();
         ControlSpeed();
@@ -160,6 +171,8 @@ public class Player_Movement : MonoBehaviour
     {
         moveDirection = orientation.forward * vertInput + orientation.right * horizInput;
 
+        //CollideSlide(rb.velocity, transform.position, maxBounces);
+
         if (OnSlope() && !exitingSlope)
         {
             rb.AddForce(GetSlopeMDirection() * moveSpeed * 20f, ForceMode.Force);
@@ -170,7 +183,9 @@ public class Player_Movement : MonoBehaviour
         }
 
         else if (grounded)
-            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
 
         else if (!grounded)
             rb.AddForce(moveDirection.normalized *  moveSpeed * 10f * airMultiplier, ForceMode.Force);
@@ -244,4 +259,31 @@ public class Player_Movement : MonoBehaviour
             canUncrouch = true;
     }
 
+    private Vector3 CollideSlide(Vector3 vel, Vector3 pos, int depth)
+    {
+        if (depth >= maxBounces)
+            return Vector3.zero;
+
+        float dist = vel.magnitude + skinThickness;
+
+        RaycastHit hit;
+        if (Physics.SphereCast(pos, bounds.extents.x, vel.normalized, out hit, dist, theEnvironment))
+        {
+            Vector3 snapToSurface = vel.normalized * (hit.distance - skinThickness);
+            Vector3 leftover = vel - snapToSurface;
+
+            if (snapToSurface.magnitude <= skinThickness)
+            {
+                snapToSurface = Vector3.zero;
+            }
+
+            float mag = leftover.magnitude;
+            leftover = Vector3.ProjectOnPlane(leftover, hit.normal).normalized;
+            leftover *= mag;
+
+            return snapToSurface + CollideSlide(leftover, pos + snapToSurface, depth + 1);
+        }
+
+        return vel;
+    }
 }

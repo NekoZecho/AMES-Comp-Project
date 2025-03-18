@@ -4,22 +4,36 @@ using UnityEngine;
 
 public class Enemy_Sight : MonoBehaviour
 {
-    GameObject plyr;
-    Transform target;
+    [Header("Enemy Detection")]
+    public float detectionRange = 10f;
+    public float fieldOfViewAngle = 110f;
+    public Transform player;
+    public Transform eyes;
 
     void Start()
     {
-        plyr = GameObject.FindGameObjectWithTag("Player");
-        target = plyr.transform;
+
     }
 
     void Update()
     {
-        Vector3 targetDir = target.position - transform.position;
-        Debug.DrawRay(transform.position, targetDir, Color.red);
-        float angle = Vector3.Angle(targetDir, transform.forward);
+        Vector3 dirToPlayer = player.position -  eyes.position;
+        float angle = Vector3.Angle(dirToPlayer, eyes.forward);
+        Debug.DrawRay(eyes.position, dirToPlayer);
 
-        if (angle < 5f)
-            Debug.Log("Close");
+        if (angle < fieldOfViewAngle)
+        {
+            if (Vector3.Distance(eyes.position, player.position) < detectionRange)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(eyes.position, dirToPlayer.normalized, out hit,detectionRange))
+                {
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        Debug.Log("Player Detected!");
+                    }
+                }
+            }
+        }
     }
 }
