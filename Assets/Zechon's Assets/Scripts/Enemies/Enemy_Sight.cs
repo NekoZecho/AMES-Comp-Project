@@ -13,22 +13,52 @@ public class Enemy_Sight : MonoBehaviour
     [Header("Detected")]
     public bool seen;
     [SerializeField]
+    float susToAwareT = 2f;
+    [SerializeField]
+    float awareToAngyT = 1f;
+    [SerializeField]
+    float undetectTimerSus = 4f;
+    [SerializeField]
+    float undetectTimerAwa = 10f;
+    [SerializeField]
+    float undetectTimerAgg = 20f;
+    GameObject Player;
+    Player_Movement PlyrMvmnt;
 
     [Header("Enemy State")]
     public EnemyState eState;
     public enum EnemyState
     {
-        
+        unaware,
+        suspicious,
+        aware,
+        aggressive
     }
 
     void Start()
     {
         seen = false;
+
+        Player = GameObject.FindGameObjectWithTag("Player");
+        PlyrMvmnt = Player.GetComponent<Player_Movement>();
+    }
+
+    void Update()
+    {
+        switch (eState)
+        {
+            case EnemyState.unaware:
+                if (seen)
+                {
+
+                }
+                break;
+        }
     }
 
     void FixedUpdate()
     {
-        Vector3 dirToPlayer = player.position -  eyes.position;
+        Vector3 dirToPlayer = player.position - eyes.position;
         float angle = Vector3.Angle(dirToPlayer, eyes.forward);
         Debug.DrawRay(eyes.position, dirToPlayer);
 
@@ -37,9 +67,9 @@ public class Enemy_Sight : MonoBehaviour
             if (Vector3.Distance(eyes.position, player.position) < detectionRange)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(eyes.position, dirToPlayer.normalized, out hit,detectionRange))
+                if (Physics.Raycast(eyes.position, dirToPlayer.normalized, out hit, detectionRange))
                 {
-                    if (hit.collider.CompareTag("Player"))
+                    if (hit.collider.CompareTag("Player_Body"))
                     {
                         seen = true;
                     }
@@ -48,16 +78,11 @@ public class Enemy_Sight : MonoBehaviour
         }
     }
 
-    void Update()
+    private void eStateHandler()
     {
-        switch (seen)
-        {
-            case true:
-
-                break;
-
-            case false:
-                break;
-        }
+        if (!seen)
+            eState = EnemyState.unaware;
+        else if (seen)
+            eState = EnemyState.suspicious;
     }
 }
