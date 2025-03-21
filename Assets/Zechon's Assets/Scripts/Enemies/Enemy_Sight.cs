@@ -12,17 +12,19 @@ public class Enemy_Sight : MonoBehaviour
 
     [Header("Detected")]
     public bool seen;
+    float unToSusT = 1;
     [SerializeField]
-    float susToAwareT = 2f;
-    bool susToAwareB;
+    float susToAwareT = 3f;
     [SerializeField]
-    float awareToAngyT = 1f;
+    float awareToAngyT = 2f;
     [SerializeField]
     float undetectTimerSus = 4f;
     [SerializeField]
     float undetectTimerAwa = 10f;
     [SerializeField]
     float undetectTimerAgg = 20f;
+    float decayTimer = 0f;
+    float progressionTimer = 0f;
     GameObject Player;
     Player_Movement PlyrMvmnt;
 
@@ -39,7 +41,8 @@ public class Enemy_Sight : MonoBehaviour
     void Start()
     {
         seen = false;
-        susToAwareB = false;
+
+        eState = EnemyState.unaware;
 
         Player = GameObject.FindGameObjectWithTag("Player");
         PlyrMvmnt = Player.GetComponent<Player_Movement>();
@@ -47,7 +50,7 @@ public class Enemy_Sight : MonoBehaviour
 
     void Update()
     {
-        eStateHandler();
+        Debug.Log(eState.ToString());
     }
 
     void FixedUpdate()
@@ -66,25 +69,55 @@ public class Enemy_Sight : MonoBehaviour
                     if (hit.collider.CompareTag("Player_Body"))
                     {
                         seen = true;
+                        detectionHandler();
                     }
+                    else
+                        decayHandler();
                 }
             }
+            else
+                decayHandler();
+            
         }
-        else
-            seen = false;
     }
 
-    private void eStateHandler()
+    private void decayHandler()
     {
-        if (!seen)
-            eState = EnemyState.unaware;
-        else if (seen)
+        if (seen && eState == EnemyState.unaware)
         {
-            if (eState == EnemyState.unaware && PlyrMvmnt.mState == Player_Movement.MovementState.sprinting)
+                seen = false;
+                decayTimer = 0;
+                eState = EnemyState.unaware;
+                progressionTimer = 0;
+        }
+        else if (seen && eState == EnemyState.suspicious)
+        {
+            decayTimer += Time.deltaTime;
+            if (decayTimer >= undetectTimerSus)
             {
-                susToAwareB = true;
-                Debug.Log("susToAwareB");
+                seen = false;
+                decayTimer = 0;
+                eState = EnemyState.unaware;
+                progressionTimer = 0;
             }
+        }
+    }
+
+    private void detectionHandler()
+    {
+        switch (eState)
+        {
+            case EnemyState.unaware:
+                if (PlyrMvmnt.mState == Player_Movement.MovementState.sprinting && seen)
+                {
+                    progressionTimer += Time.deltaTime;
+                    if (progressionTimer >= unToSusT)
+                    {
+                        eState = EnemyState.suspicious;
+                        progressionTimer = 0;
+                    }
+                }
+                break;
         }
     }
 }

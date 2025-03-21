@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Enemy_Sight_Indicators : MonoBehaviour
+{
+    [Header("Enemy Detection")]
+    Enemy_Sight Sight;
+    Image unaware;
+    Image sus;
+    Image aware;
+    Image aggro;
+
+    void Start()
+    {
+        Sight = GetComponentInParent<Enemy_Sight>();
+        unaware = transform.GetChild(0).GetComponent<Image>();
+        sus = transform.GetChild(1).GetComponent<Image>();
+        aware = transform.GetChild(2).GetComponent<Image>();
+        aggro = transform.GetChild(3).GetComponent<Image>();
+    }
+
+    void Update()
+    {
+        switch (Sight.eState)
+        {
+            case Enemy_Sight.EnemyState.unaware:
+                if (Sight.seen == true)
+                { 
+                    unaware.enabled = true;
+                    sus.enabled = false;
+                    aware.enabled = false;
+                    aggro.enabled = false;
+                }
+                else 
+                    unaware.enabled = false;
+                    sus.enabled = false;
+                    aware.enabled = false;
+                    aggro.enabled = false;
+                break;
+
+            case Enemy_Sight.EnemyState.suspicious:
+                unaware.enabled = false;
+                sus.enabled = true;
+                aware.enabled = false;
+                aggro.enabled = false;
+                break;
+        }
+    }
+}
