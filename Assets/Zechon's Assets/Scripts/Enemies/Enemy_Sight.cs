@@ -25,6 +25,7 @@ public class Enemy_Sight : MonoBehaviour
     float undetectTimerAgg = 20f;
     float decayTimer = 0f;
     float progressionTimer = 0f;
+    public float progress;
     GameObject Player;
     Player_Movement PlyrMvmnt;
 
@@ -46,6 +47,8 @@ public class Enemy_Sight : MonoBehaviour
 
         Player = GameObject.FindGameObjectWithTag("Player");
         PlyrMvmnt = Player.GetComponent<Player_Movement>();
+
+        progress = 0;
     }
 
     void Update()
@@ -111,10 +114,13 @@ public class Enemy_Sight : MonoBehaviour
                 if (PlyrMvmnt.mState == Player_Movement.MovementState.sprinting && seen)
                 {
                     progressionTimer += Time.deltaTime;
+                    progress = progressionTimer / unToSusT;
+                    Debug.Log(progress);
                     if (progressionTimer >= unToSusT)
                     {
                         eState = EnemyState.suspicious;
                         progressionTimer = 0;
+                        progress = 0;
                     }
                 }
                 break;

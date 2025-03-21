@@ -910,6 +910,7 @@ MonoBehaviour:
   undetectTimerSus: 4
   undetectTimerAwa: 10
   undetectTimerAgg: 20
+  progress: 0
   eState: 0
 --- !u!136 &76952586
 CapsuleCollider:
@@ -5018,6 +5019,7 @@ MonoBehaviour:
   undetectTimerSus: 4
   undetectTimerAwa: 10
   undetectTimerAgg: 20
+  progress: 0
   eState: 0
 --- !u!43 &293387688
 Mesh:

@@ -19,6 +19,8 @@ public class Enemy_Sight_Indicators : MonoBehaviour
         sus = transform.GetChild(1).GetComponent<Image>();
         aware = transform.GetChild(2).GetComponent<Image>();
         aggro = transform.GetChild(3).GetComponent<Image>();
+
+        sus.fillAmount = 0;
     }
 
     void Update()
@@ -29,9 +31,10 @@ public class Enemy_Sight_Indicators : MonoBehaviour
                 if (Sight.seen == true)
                 { 
                     unaware.enabled = true;
-                    sus.enabled = false;
+                    sus.enabled = true;
                     aware.enabled = false;
                     aggro.enabled = false;
+                    sus.fillAmount = Sight.progress;
                 }
                 else 
                     unaware.enabled = false;
