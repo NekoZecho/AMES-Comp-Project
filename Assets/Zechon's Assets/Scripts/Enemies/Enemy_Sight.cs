@@ -14,6 +14,7 @@ public class Enemy_Sight : MonoBehaviour
     public bool seen;
     [SerializeField]
     float susToAwareT = 2f;
+    bool susToAwareB;
     [SerializeField]
     float awareToAngyT = 1f;
     [SerializeField]
@@ -38,6 +39,7 @@ public class Enemy_Sight : MonoBehaviour
     void Start()
     {
         seen = false;
+        susToAwareB = false;
 
         Player = GameObject.FindGameObjectWithTag("Player");
         PlyrMvmnt = Player.GetComponent<Player_Movement>();
@@ -45,15 +47,7 @@ public class Enemy_Sight : MonoBehaviour
 
     void Update()
     {
-        switch (eState)
-        {
-            case EnemyState.unaware:
-                if (seen)
-                {
-
-                }
-                break;
-        }
+        eStateHandler();
     }
 
     void FixedUpdate()
@@ -76,6 +70,8 @@ public class Enemy_Sight : MonoBehaviour
                 }
             }
         }
+        else
+            seen = false;
     }
 
     private void eStateHandler()
@@ -83,6 +79,12 @@ public class Enemy_Sight : MonoBehaviour
         if (!seen)
             eState = EnemyState.unaware;
         else if (seen)
-            eState = EnemyState.suspicious;
+        {
+            if (eState == EnemyState.unaware && PlyrMvmnt.mState == Player_Movement.MovementState.sprinting)
+            {
+                susToAwareB = true;
+                Debug.Log("susToAwareB");
+            }
+        }
     }
 }

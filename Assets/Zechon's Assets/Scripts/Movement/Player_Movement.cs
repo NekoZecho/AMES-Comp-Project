@@ -171,8 +171,6 @@ public class Player_Movement : MonoBehaviour
     {
         moveDirection = orientation.forward * vertInput + orientation.right * horizInput;
 
-        //CollideSlide(rb.velocity, transform.position, maxBounces);
-
         if (OnSlope() && !exitingSlope)
         {
             rb.AddForce(GetSlopeMDirection() * moveSpeed * 20f, ForceMode.Force);
