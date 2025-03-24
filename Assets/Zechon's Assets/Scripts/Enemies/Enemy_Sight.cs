@@ -28,6 +28,7 @@ public class Enemy_Sight : MonoBehaviour
     public float progress;
     GameObject Player;
     Player_Movement PlyrMvmnt;
+    bool timerSwapped;
 
     [Header("Enemy State")]
     public EnemyState eState;
@@ -49,6 +50,8 @@ public class Enemy_Sight : MonoBehaviour
         PlyrMvmnt = Player.GetComponent<Player_Movement>();
 
         progress = 0;
+
+        timerSwapped = false;
     }
 
     void Update()
@@ -88,15 +91,28 @@ public class Enemy_Sight : MonoBehaviour
     {
         if (seen && eState == EnemyState.unaware)
         {
-                seen = false;
-                decayTimer = 0;
-                eState = EnemyState.unaware;
-                progressionTimer = 0;
+            seen = false;
+            eState = EnemyState.unaware;
+            progressionTimer = 0;
+            if (decayTimer !<= 0)
+            {
+            decayTimer -= Time.deltaTime;
+            progress = decayTimer / undetectTimerSus;
+            }
+            else
+            {
+                timerSwapped = false;
+            }
         }
         else if (seen && eState == EnemyState.suspicious)
         {
-            decayTimer += Time.deltaTime;
-            if (decayTimer >= undetectTimerSus)
+            DecayTimerSwitch();
+            if (progress >= 0)
+            {
+                decayTimer -= Time.deltaTime;
+                progress = decayTimer / undetectTimerSus;
+            }
+            if (decayTimer <= 0)
             {
                 seen = false;
                 decayTimer = 0;
@@ -122,6 +138,23 @@ public class Enemy_Sight : MonoBehaviour
                         progressionTimer = 0;
                         progress = 0;
                     }
+                }
+                break;
+        }
+    }
+
+    private void DecayTimerSwitch()
+    {
+        switch (timerSwapped)
+        {
+            case true:
+                break;
+
+            case false:
+                if (eState == EnemyState.unaware)
+                {
+                    decayTimer = undetectTimerSus;
+                    timerSwapped = true;
                 }
                 break;
         }

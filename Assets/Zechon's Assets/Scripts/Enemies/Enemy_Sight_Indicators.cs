@@ -28,19 +28,12 @@ public class Enemy_Sight_Indicators : MonoBehaviour
         switch (Sight.eState)
         {
             case Enemy_Sight.EnemyState.unaware:
-                if (Sight.seen == true)
-                { 
                     unaware.enabled = true;
                     sus.enabled = true;
                     aware.enabled = false;
                     aggro.enabled = false;
                     sus.fillAmount = Sight.progress;
-                }
-                else 
-                    unaware.enabled = false;
-                    sus.enabled = false;
-                    aware.enabled = false;
-                    aggro.enabled = false;
+                
                 break;
 
             case Enemy_Sight.EnemyState.suspicious:
