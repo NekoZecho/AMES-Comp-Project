@@ -35,8 +35,8 @@ public class Enemy_Sight : MonoBehaviour
     public enum EnemyState
     {
         unaware,
-        suspicious,
         aware,
+        suspicious,
         aggressive
     }
 
@@ -56,7 +56,16 @@ public class Enemy_Sight : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(eState.ToString());
+        switch (seen)
+        {
+            case true:
+                AgressionStateHandler();
+                break;
+
+            case false:
+                StateDecayHandler();
+                break;
+        }
     }
 
     void FixedUpdate()
@@ -65,7 +74,7 @@ public class Enemy_Sight : MonoBehaviour
         float angle = Vector3.Angle(dirToPlayer, eyes.forward);
         Debug.DrawRay(eyes.position, dirToPlayer);
 
-        if (angle < fieldOfViewAngle)
+        if (angle < fieldOfViewAngle / 2)
         {
             if (Vector3.Distance(eyes.position, player.position) < detectionRange)
             {
@@ -75,88 +84,29 @@ public class Enemy_Sight : MonoBehaviour
                     if (hit.collider.CompareTag("Player_Body"))
                     {
                         seen = true;
-                        detectionHandler();
                     }
-                    else
-                        decayHandler();
+                    seen = false;
                 }
             }
-            else
-                decayHandler();
-            
         }
     }
 
-    private void decayHandler()
-    {
-        if (seen && eState == EnemyState.unaware)
-        {
-            seen = false;
-            eState = EnemyState.unaware;
-            progressionTimer = 0;
-            if (decayTimer !<= 0)
-            {
-            decayTimer -= Time.deltaTime;
-            progress = decayTimer / undetectTimerSus;
-            }
-            else
-            {
-                timerSwapped = false;
-            }
-        }
-        else if (seen && eState == EnemyState.suspicious)
-        {
-            DecayTimerSwitch();
-            if (progress >= 0)
-            {
-                decayTimer -= Time.deltaTime;
-                progress = decayTimer / undetectTimerSus;
-            }
-            if (decayTimer <= 0)
-            {
-                seen = false;
-                decayTimer = 0;
-                eState = EnemyState.unaware;
-                progressionTimer = 0;
-            }
-        }
-    }
-
-    private void detectionHandler()
+    private void AgressionStateHandler()
     {
         switch (eState)
         {
             case EnemyState.unaware:
-                if (PlyrMvmnt.mState == Player_Movement.MovementState.sprinting && seen)
-                {
-                    progressionTimer += Time.deltaTime;
-                    progress = progressionTimer / unToSusT;
-                    Debug.Log(progress);
-                    if (progressionTimer >= unToSusT)
-                    {
-                        eState = EnemyState.suspicious;
-                        progressionTimer = 0;
-                        progress = 0;
-                    }
-                }
+
+                break;
+
+            case EnemyState.aware:
+
                 break;
         }
     }
 
-    private void DecayTimerSwitch()
+    private void StateDecayHandler()
     {
-        switch (timerSwapped)
-        {
-            case true:
-                break;
 
-            case false:
-                if (eState == EnemyState.unaware)
-                {
-                    decayTimer = undetectTimerSus;
-                    timerSwapped = true;
-                }
-                break;
-        }
     }
 }

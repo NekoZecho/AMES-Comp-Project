@@ -16,8 +16,8 @@ public class Enemy_Sight_Indicators : MonoBehaviour
     {
         Sight = GetComponentInParent<Enemy_Sight>();
         unaware = transform.GetChild(0).GetComponent<Image>();
-        sus = transform.GetChild(1).GetComponent<Image>();
-        aware = transform.GetChild(2).GetComponent<Image>();
+        aware = transform.GetChild(1).GetComponent<Image>();
+        sus = transform.GetChild(2).GetComponent<Image>();
         aggro = transform.GetChild(3).GetComponent<Image>();
 
         sus.fillAmount = 0;
