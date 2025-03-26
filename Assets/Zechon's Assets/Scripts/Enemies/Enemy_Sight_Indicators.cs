@@ -7,7 +7,6 @@ public class Enemy_Sight_Indicators : MonoBehaviour
 {
     [Header("Enemy Detection")]
     Enemy_Sight Sight;
-    Image unaware;
     Image sus;
     Image aware;
     Image aggro;
@@ -15,12 +14,12 @@ public class Enemy_Sight_Indicators : MonoBehaviour
     void Start()
     {
         Sight = GetComponentInParent<Enemy_Sight>();
-        unaware = transform.GetChild(0).GetComponent<Image>();
-        aware = transform.GetChild(1).GetComponent<Image>();
-        sus = transform.GetChild(2).GetComponent<Image>();
-        aggro = transform.GetChild(3).GetComponent<Image>();
+        aware = transform.GetChild(0).GetComponent<Image>();
+        sus = transform.GetChild(1).GetComponent<Image>();
+        aggro = transform.GetChild(2).GetComponent<Image>();
 
         sus.fillAmount = 0;
+        aware.fillAmount = 0;
     }
 
     void Update()
@@ -28,19 +27,17 @@ public class Enemy_Sight_Indicators : MonoBehaviour
         switch (Sight.eState)
         {
             case Enemy_Sight.EnemyState.unaware:
-                    unaware.enabled = true;
-                    sus.enabled = true;
-                    aware.enabled = false;
+                    aware.enabled = true;
+                    sus.enabled = false;
                     aggro.enabled = false;
-                    sus.fillAmount = Sight.progress;
-                
+                    aware.fillAmount = Sight.progress;
                 break;
 
-            case Enemy_Sight.EnemyState.suspicious:
-                unaware.enabled = false;
+            case Enemy_Sight.EnemyState.aware:
                 sus.enabled = true;
-                aware.enabled = false;
+                aware.enabled = true;
                 aggro.enabled = false;
+                sus.fillAmount= Sight.progress;
                 break;
         }
     }

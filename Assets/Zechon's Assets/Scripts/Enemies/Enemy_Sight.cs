@@ -12,9 +12,10 @@ public class Enemy_Sight : MonoBehaviour
 
     [Header("Detected")]
     public bool seen;
-    float unToSusT = 1;
+    public bool inSusRange;
+    float unToAwareT = 1;
     [SerializeField]
-    float susToAwareT = 3f;
+    float awareToSusT = 3f;
     [SerializeField]
     float awareToAngyT = 2f;
     [SerializeField]
@@ -43,6 +44,7 @@ public class Enemy_Sight : MonoBehaviour
     void Start()
     {
         seen = false;
+        inSusRange = false;
 
         eState = EnemyState.unaware;
 
@@ -84,8 +86,29 @@ public class Enemy_Sight : MonoBehaviour
                     if (hit.collider.CompareTag("Player_Body"))
                     {
                         seen = true;
+
+                        var hitPoint = hit.point;
+                        hitPoint.y = 0;
+                        var EnemyPos = eyes.position;
+                        EnemyPos.y = 0;
+
+                        float distToP = Vector3.Distance(hitPoint, EnemyPos);
+                        Debug.Log(distToP);
+
+                        if (distToP <= (detectionRange / 2f))
+                        {
+                            inSusRange = true;
+                        }
+
+                        else
+                            inSusRange = false;
                     }
-                    seen = false;
+
+                    else
+                    {
+                        seen = false;
+                        inSusRange = false;
+                    }
                 }
             }
         }
@@ -96,11 +119,41 @@ public class Enemy_Sight : MonoBehaviour
         switch (eState)
         {
             case EnemyState.unaware:
+                if (!timerSwapped)
+                {
+                    progressionTimer = 0;
+                    timerSwapped = true;
+                }
 
+                progressionTimer += Time.deltaTime;
+                progress = progressionTimer / unToAwareT;
+
+                if (progressionTimer >= unToAwareT)
+                {
+                    eState = EnemyState.aware;
+                    timerSwapped = false;
+                    progress = 0;
+                }
                 break;
 
             case EnemyState.aware:
+                if (inSusRange || (seen && PlyrMvmnt.mState == Player_Movement.MovementState.sprinting))
+                {
+                    if (!timerSwapped)
+                    {
+                        progressionTimer = 0;
+                        timerSwapped = true;
+                    }
 
+                    progressionTimer += Time.deltaTime;
+                    progress = progressionTimer / awareToSusT;
+
+                    if (progressionTimer >= awareToSusT)
+                    {
+                        eState = EnemyState.suspicious;
+                        timerSwapped = false;
+                    }
+                }
                 break;
         }
     }
