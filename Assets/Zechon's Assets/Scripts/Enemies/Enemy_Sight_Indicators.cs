@@ -10,6 +10,7 @@ public class Enemy_Sight_Indicators : MonoBehaviour
     Image sus;
     Image aware;
     Image aggro;
+    bool swapped;
 
     void Start()
     {
@@ -20,6 +21,8 @@ public class Enemy_Sight_Indicators : MonoBehaviour
 
         sus.fillAmount = 0;
         aware.fillAmount = 0;
+
+        swapped = false;
     }
 
     void Update()
@@ -30,14 +33,7 @@ public class Enemy_Sight_Indicators : MonoBehaviour
                     aware.enabled = true;
                     sus.enabled = false;
                     aggro.enabled = false;
-                    aware.fillAmount = Sight.progress;
-                break;
-
-            case Enemy_Sight.EnemyState.aware:
-                sus.enabled = true;
-                aware.enabled = true;
-                aggro.enabled = false;
-                sus.fillAmount= Sight.progress;
+                aware.fillAmount = Sight.progress;
                 break;
         }
     }

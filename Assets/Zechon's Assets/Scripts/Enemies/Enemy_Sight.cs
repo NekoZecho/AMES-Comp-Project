@@ -6,6 +6,7 @@ public class Enemy_Sight : MonoBehaviour
 {
     [Header("Enemy Sight")]
     public float detectionRange = 10f;
+    public float susRange = 3f;
     public float fieldOfViewAngle = 110f;
     public Transform player;
     public Transform eyes;
@@ -30,6 +31,8 @@ public class Enemy_Sight : MonoBehaviour
     GameObject Player;
     Player_Movement PlyrMvmnt;
     bool timerSwapped;
+    bool dTimerSwapped;
+    public bool fullyDecayed;
 
     [Header("Enemy State")]
     public EnemyState eState;
@@ -54,6 +57,7 @@ public class Enemy_Sight : MonoBehaviour
         progress = 0;
 
         timerSwapped = false;
+        dTimerSwapped = false;
     }
 
     void Update()
@@ -68,6 +72,8 @@ public class Enemy_Sight : MonoBehaviour
                 StateDecayHandler();
                 break;
         }
+
+        Debug.Log(progress);
     }
 
     void FixedUpdate()
@@ -93,9 +99,8 @@ public class Enemy_Sight : MonoBehaviour
                         EnemyPos.y = 0;
 
                         float distToP = Vector3.Distance(hitPoint, EnemyPos);
-                        Debug.Log(distToP);
 
-                        if (distToP <= (detectionRange / 2f))
+                        if (distToP <= susRange)
                         {
                             inSusRange = true;
                         }
@@ -111,6 +116,18 @@ public class Enemy_Sight : MonoBehaviour
                     }
                 }
             }
+
+            else
+            {
+                seen = false;
+                inSusRange = false;
+            }
+        }
+
+        else
+        {
+            seen = false;
+            inSusRange = false;
         }
     }
 
@@ -132,6 +149,7 @@ public class Enemy_Sight : MonoBehaviour
                 {
                     eState = EnemyState.aware;
                     timerSwapped = false;
+                    dTimerSwapped = false;
                     progress = 0;
                 }
                 break;
@@ -160,6 +178,50 @@ public class Enemy_Sight : MonoBehaviour
 
     private void StateDecayHandler()
     {
+            switch (eState)
+            {
+                case EnemyState.unaware:
+                    if (progressionTimer > 0)
+                    {
+                        if (!dTimerSwapped)
+                        {
+                            decayTimer = progressionTimer;
+                            dTimerSwapped = true;
+                        }
 
+                        decayTimer -= Time.deltaTime;
+                        progress = decayTimer / unToAwareT;
+
+                        if (decayTimer <= 0)
+                        {
+                            decayTimer = 0;
+                        }
+                    }
+                    break;
+
+                case EnemyState.aware:
+                    if (progressionTimer > 0)
+                    {
+                        if (!dTimerSwapped)
+                        {
+                            decayTimer = progressionTimer;
+                            dTimerSwapped = true;
+                        }
+
+                        decayTimer -= Time.deltaTime;
+                        progress = decayTimer / unToAwareT;
+
+                        if (decayTimer <= 0)
+                        {
+                            dTimerSwapped = false;
+                            progressionTimer = unToAwareT;
+                            eState = EnemyState.unaware;
+                        }
+
+                    }
+                    break;
+
+            }
+        }
     }
-}
+
