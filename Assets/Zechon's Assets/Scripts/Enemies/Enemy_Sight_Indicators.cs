@@ -27,14 +27,8 @@ public class Enemy_Sight_Indicators : MonoBehaviour
 
     void Update()
     {
-        switch (Sight.eState)
-        {
-            case Enemy_Sight.EnemyState.unaware:
-                    aware.enabled = true;
-                    sus.enabled = false;
-                    aggro.enabled = false;
-                aware.fillAmount = Sight.progress;
-                break;
-        }
+        aware.fillAmount = Sight.awareProgress;
+        sus.fillAmount = Sight.susProgress;
+        aggro.fillAmount = Sight.aggroProgress;
     }
 }
