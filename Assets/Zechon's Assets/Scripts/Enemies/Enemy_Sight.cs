@@ -23,8 +23,6 @@ public class Enemy_Sight : MonoBehaviour
     float susToAngyT = 2f;
     GameObject Player;
     Player_Movement PlyrMvmnt;
-    bool timerSwapped;
-    bool dTimerSwapped;
     public bool fullyDecayed;
 
     [Header("Progress")]
@@ -64,9 +62,6 @@ public class Enemy_Sight : MonoBehaviour
         awarePT = 0;
         susPT = 0;
         aggroPT = 0;
-
-        timerSwapped = false;
-        dTimerSwapped = false;
 
         EnemyMode = 0;
 }

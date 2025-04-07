@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,5 +31,17 @@ public class Enemy_Sight_Indicators : MonoBehaviour
         aware.fillAmount = Sight.awareProgress;
         sus.fillAmount = Sight.susProgress;
         aggro.fillAmount = Sight.aggroProgress;
+
+        if (aggro.fillAmount > 0)
+        {
+            aware.enabled = false;
+            sus.enabled = false;
+        }
+
+        else
+        {
+            aware.enabled = true;
+            sus.enabled = true;
+        }
     }
 }
