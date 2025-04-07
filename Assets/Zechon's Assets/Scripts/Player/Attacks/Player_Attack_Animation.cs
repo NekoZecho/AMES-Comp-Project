@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UnityEngine;
 
-public class Player_Attack : MonoBehaviour
+public class Player_Attack_Animation : MonoBehaviour
 {
     [Header("Components")]
     Animator anim;

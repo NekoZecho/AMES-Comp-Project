@@ -11,7 +11,6 @@ public class Enemy_Sight_Indicators : MonoBehaviour
     Image sus;
     Image aware;
     Image aggro;
-    bool swapped;
 
     void Start()
     {
@@ -22,8 +21,7 @@ public class Enemy_Sight_Indicators : MonoBehaviour
 
         sus.fillAmount = 0;
         aware.fillAmount = 0;
-
-        swapped = false;
+        aggro.fillAmount = 0;
     }
 
     void Update()
