@@ -30,7 +30,6 @@ public class Player_Attack_Animation : MonoBehaviour
         {
             anim.SetBool("Attack", false);
         }
-
     }
 
     public void CheckAttackToggle()
