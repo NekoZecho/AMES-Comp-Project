@@ -27,6 +27,4 @@ public class Player_Attack : MonoBehaviour
             clldr.enabled = false;
         }
     }
-
-    private void
 }
