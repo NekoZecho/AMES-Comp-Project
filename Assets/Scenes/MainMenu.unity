@@ -6574,9 +6574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '      Gutterghosts
-
-'
+  m_text: '           Maskborne'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3ad73f7d12276224984c8f3e2bfb71ee, type: 2}
   m_sharedMaterial: {fileID: 8893313670114571015, guid: 3ad73f7d12276224984c8f3e2bfb71ee,
@@ -7680,9 +7678,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcd9f945121a1fc41af6d02c38cf6c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetButton: {fileID: 462477857}
-  targetText: {fileID: 1616425479}
-  targetCanvasGroup: {fileID: 1616425478}
 --- !u!1 &1603445871
 GameObject:
   m_ObjectHideFlags: 0
