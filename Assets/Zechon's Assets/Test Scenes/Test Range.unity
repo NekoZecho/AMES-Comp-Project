@@ -23103,18 +23103,18 @@ MonoBehaviour:
   heavyAttack: 324
   block: 102
   rdodge: 114
-  LAttackDuration: 0
-  HAttackDuration: 0
-  blockRecup: 0
-  decisionDuration: 0
+  lAttackDuration: 0.5
+  hAttackDuration: 1.25
+  blockRecup: 4
+  decisionDuration: 3
+  comboResiliance: 2
+  timeSinceLastHit: 0
   consecutiveHits: 0
   lightHits: 0
   heavyHits: 0
   blockedHits: 0
-  attacking: 0
-  blocking: 0
-  staggered: 0
-  dodging: 0
+  pAState: 0
+  rightHandActive: 0
 --- !u!1 &1467087296
 GameObject:
   m_ObjectHideFlags: 0
