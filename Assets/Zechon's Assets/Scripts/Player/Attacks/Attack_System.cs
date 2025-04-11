@@ -22,8 +22,10 @@ public class Attack_System : MonoBehaviour
     float nyaBR;
     [SerializeField]
     float decisionDuration;
+    float decdur;
     [SerializeField]
     float comboResiliance;
+    float comres;
 
     [Header("Hits Info")]
     public float timeSinceLastHit;
@@ -42,6 +44,7 @@ public class Attack_System : MonoBehaviour
     private bool blocking;
     private bool dodging;
     private bool stunned;
+    public bool rightHandActive;
 
     [Header("Player Attack")]
     public PlayerAttackState pAState;
@@ -53,7 +56,6 @@ public class Attack_System : MonoBehaviour
         dodging,
         stunned
     }
-    public bool rightHandActive;
 
     void Start()
     {
@@ -109,12 +111,29 @@ public class Attack_System : MonoBehaviour
         {
             if (!stunned && !blocking && !attacking && lAttackDuration == 0 && hAttackDuration == 0)
             {
-                attacking = true;
-                lAttackDuration = lAtkD;
-                timeSinceLastHit = 0;
-                consecutiveHits++;
-                lightHits++;
-                Debug.Log("Light Attack!");
+                switch (rightHandActive)
+                {
+                    case true:
+                        attacking = true;
+                        lAttackDuration = lAtkD;
+                        timeSinceLastHit = 0;
+                        consecutiveHits++;
+                        lightHits++;
+                        Debug.Log("Light Attack Right!");
+                        rightHandActive = false;
+                        break;
+
+                    case false:
+                        attacking = true;
+                        lAttackDuration = lAtkD;
+                        timeSinceLastHit = 0;
+                        consecutiveHits++;
+                        lightHits++;
+                        Debug.Log("Light Attack Left!");
+                        rightHandActive = true;
+                        break;
+                }
+                
             }
         }
         //heavy attack, (heavy tf2 reference!!!)
@@ -122,12 +141,28 @@ public class Attack_System : MonoBehaviour
         {
             if (!stunned && !blocking && !attacking && lAttackDuration == 0 && hAttackDuration == 0)
             {
-                attacking = true;
-                hAttackDuration = hAtkD;
-                timeSinceLastHit = 0;
-                consecutiveHits++;
-                heavyHits++;
-                Debug.Log("Heavy Attack!");
+                switch (rightHandActive)
+                {
+                    case true:
+                        attacking = true;
+                        hAttackDuration = hAtkD;
+                        timeSinceLastHit = 0;
+                        consecutiveHits++;
+                        heavyHits++;
+                        Debug.Log("Heavy Attack Right!");
+                        rightHandActive = false;
+                        break;
+
+                    case false:
+                        attacking = true;
+                        hAttackDuration = hAtkD;
+                        timeSinceLastHit = 0;
+                        consecutiveHits++;
+                        heavyHits++;
+                        Debug.Log("Heavy Attack Left!");
+                        rightHandActive = true;
+                        break;
+                }
             }
         }
         //blocking
@@ -208,4 +243,6 @@ public class Attack_System : MonoBehaviour
         unAttack();
         unBlock();
     }
+
+
 }
