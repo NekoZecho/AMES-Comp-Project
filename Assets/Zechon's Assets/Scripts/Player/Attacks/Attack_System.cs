@@ -8,7 +8,7 @@ public class Attack_System : MonoBehaviour
     public KeyCode lightAttack = KeyCode.Mouse0;
     public KeyCode heavyAttack = KeyCode.Mouse1;
     public KeyCode block = KeyCode.F;
-    public KeyCode rdodge = KeyCode.R;
+    public KeyCode dodge = KeyCode.R;
 
     [Header("Cooldowns / Debounces")]
     [SerializeField]
@@ -25,7 +25,6 @@ public class Attack_System : MonoBehaviour
     float decdur;
     [SerializeField]
     float comboResiliance;
-    float comres;
 
     [Header("Hits Info")]
     public float timeSinceLastHit;
@@ -244,5 +243,29 @@ public class Attack_System : MonoBehaviour
         unBlock();
     }
 
-
+    private void colliderToggle()
+    {
+        if (rightHandActive)
+        {
+            if (RightHand.enabled == true)
+            {
+                RightHand.enabled = false;
+            }
+            else
+            {
+                RightHand.enabled = true;
+            }
+        }
+        else
+        {
+            if (LeftHand.enabled == true)
+            {
+                LeftHand.enabled = false;
+            }
+            else
+            {
+                LeftHand.enabled = true;
+            }
+        }
+    }
 }
