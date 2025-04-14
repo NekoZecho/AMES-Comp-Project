@@ -53,7 +53,7 @@ public class Enemy_Sight : MonoBehaviour
         eState = EnemyState.unaware;
 
         Player = GameObject.FindGameObjectWithTag("Player");
-        PlyrMvmnt = Player.GetComponent<Player_Movement>();
+        //PlyrMvmnt = Player.GetComponent<Player_Movement>();
 
         awareProgress = 0;
         susProgress = 0;
