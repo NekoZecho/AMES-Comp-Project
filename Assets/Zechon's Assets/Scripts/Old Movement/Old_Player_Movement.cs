@@ -6,7 +6,7 @@ using TMPro;
 using JetBrains.Annotations;
 using Unity.Burst.CompilerServices;
 
-public class Player_Movement : MonoBehaviour
+public class Old_Player_Movement : MonoBehaviour
 {
     [Header("Movement")]
     private float moveSpeed;

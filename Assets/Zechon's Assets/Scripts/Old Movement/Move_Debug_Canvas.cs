@@ -9,7 +9,7 @@ public class Move_Debug_Canvas : MonoBehaviour
     [SerializeField]
     GameObject plyr;
     Rigidbody rb;
-    Player_Movement plyr_mvmnt;
+    Old_Player_Movement plyr_mvmnt;
 
     [Header("Data")]
     [SerializeField]
@@ -22,7 +22,7 @@ public class Move_Debug_Canvas : MonoBehaviour
     void Start()
     {
         rb = plyr.GetComponent<Rigidbody>();
-        plyr_mvmnt = plyr.GetComponent<Player_Movement>();
+        plyr_mvmnt = plyr.GetComponent<Old_Player_Movement>();
     }
 
     
@@ -32,19 +32,19 @@ public class Move_Debug_Canvas : MonoBehaviour
         Slope.text = "Slope: " + plyr_mvmnt.dAngle.ToString("F1");
         switch (plyr_mvmnt.mState)
         {
-            case Player_Movement.MovementState.walking:
+            case Old_Player_Movement.MovementState.walking:
                 MState.text = "Walking";
                 break;
 
-            case Player_Movement.MovementState.sprinting:
+            case Old_Player_Movement.MovementState.sprinting:
                 MState.text = "Sprinting";
                 break;
 
-            case Player_Movement.MovementState.crouching:
+            case Old_Player_Movement.MovementState.crouching:
                 MState.text = "Crouching";
                 break;
 
-            case Player_Movement.MovementState.air:
+            case Old_Player_Movement.MovementState.air:
                 MState.text = "Jumping";
                 break;
         }
