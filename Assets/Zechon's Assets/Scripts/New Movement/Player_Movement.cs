@@ -14,7 +14,7 @@ public class Player_Movement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode crouchKey = KeyCode.C;
 
     [Header("Movement")]
     private float moveSpeed;
@@ -71,6 +71,8 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(moveSpeed);
+        Debug.Log(grounded);
         // is there ground below me???
         grounded = Physics.Raycast(transform.position, Vector3.down, plyrHeight * 0.5f + 0.2f, thisIsGround);
 
@@ -110,7 +112,6 @@ public class Player_Movement : MonoBehaviour
 
         if (Input.GetKeyDown(crouchKey))
         {
-            anim.SetBool("Crouching", true);
             clldr.height = startYScale * crouchYScale;
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
@@ -128,11 +129,11 @@ public class Player_Movement : MonoBehaviour
 
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMDirection() * moveSpeed * 20f, ForceMode.Force);
+            rb.AddForce(GetSlopeMDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
 
             if (rb.velocity.y > 0)
             {
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+                rb.AddForce(Vector3.down * 10f, ForceMode.Force);
             }
         }
 
@@ -156,17 +157,16 @@ public class Player_Movement : MonoBehaviour
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
         }
-        if(grounded && Input.GetKey(sprintKey))
+        else if(grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
             anim.SetBool("Walking", false);
         }
-        else if(grounded)
+        else if(grounded && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
-            anim.SetBool("Walking", true);
         }
         else
         {
@@ -216,7 +216,7 @@ public class Player_Movement : MonoBehaviour
         exitingSlope = false;
     }
 
-    private bool OnSlope()
+    public bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, plyrHeight * 0.5f + 0.3f))
         {
@@ -227,8 +227,8 @@ public class Player_Movement : MonoBehaviour
         return false;
     }
 
-    private Vector3 GetSlopeMDirection()
+    public Vector3 GetSlopeMDirection(Vector3 direction)
     {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
     }
 }
