@@ -17,6 +17,7 @@ public class Player_Movement : MonoBehaviour
     public KeyCode crouchKey = KeyCode.C;
 
     [Header("Movement")]
+    public bool sliding;
     private float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
