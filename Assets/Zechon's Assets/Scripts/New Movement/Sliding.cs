@@ -18,6 +18,8 @@ public class Sliding : MonoBehaviour
     public float slideScaleY;
     private float startScaleY;
 
+    private bool sliding;
+
     [Header("Keybinds")]
     public KeyCode slideKey = KeyCode.LeftControl;
     private float hInput;
@@ -41,7 +43,7 @@ public class Sliding : MonoBehaviour
             StartSlide();
         }
 
-        if (Input.GetKeyUp(slideKey) && pm.sliding)
+        if (Input.GetKeyUp(slideKey) && sliding)
         {
             StopSlide();
         }
@@ -49,7 +51,7 @@ public class Sliding : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (pm.sliding)
+        if (sliding)
             SlidingMovement();
     }
 
@@ -79,7 +81,7 @@ public class Sliding : MonoBehaviour
 
     private void StartSlide()
     {
-        pm.sliding = true;
+        sliding = true;
 
         plyrClldr.height = startScaleY * slideScaleY;
         rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
@@ -89,7 +91,7 @@ public class Sliding : MonoBehaviour
 
     private void StopSlide()
     {
-        pm.sliding = false;
+        sliding = false;
 
         plyrClldr.height = startScaleY;
     }
