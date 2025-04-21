@@ -10,7 +10,7 @@ public class Player_Movement : MonoBehaviour
     Animator anim;
     [SerializeField]
     CapsuleCollider clldr;
-    public Rigidbody rb;
+    Rigidbody rb;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -69,6 +69,7 @@ public class Player_Movement : MonoBehaviour
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
@@ -181,7 +182,7 @@ public class Player_Movement : MonoBehaviour
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
-            anim.SetBool("Walking", false);
+            //anim.SetBool("Walking", false);
         }
         else if (grounded && !(Input.GetKey(crouchKey)))
         {
