@@ -10,7 +10,6 @@ public class Player_Movement : MonoBehaviour
     Animator anim;
     [SerializeField]
     CapsuleCollider clldr;
-    public Rigidbody rb;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -23,10 +22,6 @@ public class Player_Movement : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
     public float groundDrag;
-
-    public bool freeze;
-    public bool unlimited;
-    public bool restricted;
 
     [Header("Jumping")]
     public float jumpForce;
@@ -54,13 +49,11 @@ public class Player_Movement : MonoBehaviour
 
     Vector3 moveDirection;
 
-
+    Rigidbody rb;
     
     public MovementState state;
     public enum MovementState
     {
-        freeze,
-        unlimited,
         walking,
         sprinting,
         crouching,
@@ -69,6 +62,7 @@ public class Player_Movement : MonoBehaviour
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
@@ -131,8 +125,6 @@ public class Player_Movement : MonoBehaviour
 
     void PlayerMove()
     {
-        if (restricted) return;
-
         //move calc dir
         moveDirection = orientation.forward * vertInput + orientation.right * horizInput;
 
@@ -161,29 +153,18 @@ public class Player_Movement : MonoBehaviour
 
     void StateHandler()
     {
-        if (freeze)
-        {
-            state = MovementState.freeze;
-            rb.velocity = Vector3.zero;
-        }
-        else if (unlimited)
-        {
-            state = MovementState.unlimited;
-            moveSpeed = 999f;
-            return;
-        }
         if (Input.GetKeyDown(crouchKey))
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
         }
-        else if (grounded && Input.GetKey(sprintKey))
+        else if(grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
             anim.SetBool("Walking", false);
         }
-        else if (grounded && !(Input.GetKey(crouchKey)))
+        else if(grounded && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
