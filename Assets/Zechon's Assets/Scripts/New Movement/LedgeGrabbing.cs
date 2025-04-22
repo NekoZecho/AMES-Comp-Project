@@ -8,6 +8,9 @@ public class LedgeGrabbing : MonoBehaviour
     public Player_Movement pm;
     public Transform orientation;
     public Rigidbody rb;
+    [SerializeField]
+    float castPosHeight;
+    public Camera cam;
 
     [Header("Ledge Grabbing")]
     public float moveToLedgeSpeed;
@@ -30,6 +33,7 @@ public class LedgeGrabbing : MonoBehaviour
     public float ledgeDetectLength;
     public float ledgeSphereCastRad;
     public LayerMask theseAreLedges;
+    Vector3 castPos;
 
     private Transform lastLedge;
     private Transform curLedge;
@@ -38,8 +42,14 @@ public class LedgeGrabbing : MonoBehaviour
 
     void Update()
     {
+        defineCastPos();
         LedgeDetection();
         SubStateMachine();
+    }
+    
+    private void defineCastPos()
+    {
+        castPos = new Vector3(transform.position.x, transform.position.y + castPosHeight, transform.position.z);
     }
 
     private void SubStateMachine()
@@ -82,10 +92,18 @@ public class LedgeGrabbing : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(castPos, .2f);
+        Gizmos.DrawLine(castPos, orientation.forward);
+        Gizmos.DrawLine(cam.transform.position, cam.transform.forward);
+    }
+
     //checks for ledges, simple enough
     private void LedgeDetection()
     {
-        bool ledgeDetected = Physics.SphereCast(transform.position, ledgeSphereCastRad, orientation.forward, out ledgeHit, ledgeDetectLength, theseAreLedges);
+        bool ledgeDetected = Physics.SphereCast(castPos, ledgeSphereCastRad, orientation.forward, out ledgeHit, ledgeDetectLength, theseAreLedges);
 
         if (!ledgeDetected) return;
 
@@ -131,8 +149,8 @@ public class LedgeGrabbing : MonoBehaviour
     {
         rb.useGravity = false;
 
-        Vector3 directionToLedge = curLedge.position - transform.position;
-        float distanceToLedge = Vector3.Distance(transform.position, curLedge.position);
+        Vector3 directionToLedge = curLedge.position - castPos;
+        float distanceToLedge = Vector3.Distance(castPos, curLedge.position);
 
         //move da player to da ledge
         if (distanceToLedge > 1f)
@@ -146,8 +164,14 @@ public class LedgeGrabbing : MonoBehaviour
         //Hold on
         else
         {
-            if (!pm.freeze) pm.freeze = true;
-            if (pm.unlimited) pm.unlimited = false;
+            if (!pm.freeze)
+            {
+                pm.freeze = true;
+            }
+            if (pm.unlimited)
+            {
+                pm.unlimited = false;
+            }
         }
 
         //exit if something goes awry
@@ -156,14 +180,14 @@ public class LedgeGrabbing : MonoBehaviour
 
     private void ExitLedgeHold()
     {
+        pm.restricted = false;
+        pm.freeze = false;
+
         exitingLedge = true;
         exitLedgeT = exitLedgeTime;
 
         holding = false;
         tOnLedge = 0f;
-
-        pm.restricted = false;
-        pm.freeze = false;
 
         rb.useGravity = true;
 

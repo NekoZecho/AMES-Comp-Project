@@ -24,10 +24,6 @@ public class Player_Movement : MonoBehaviour
     public float sprintSpeed;
     public float groundDrag;
 
-    public bool freeze;
-    public bool unlimited;
-    public bool restricted;
-
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCD;
@@ -48,6 +44,11 @@ public class Player_Movement : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
+
+    [Header("Climbing")]
+    public bool freeze;
+    public bool unlimited;
+    public bool restricted;
 
     float horizInput;
     float vertInput;
@@ -132,32 +133,38 @@ public class Player_Movement : MonoBehaviour
 
     void PlayerMove()
     {
-        if (restricted) return;
-
-        //move calc dir
-        moveDirection = orientation.forward * vertInput + orientation.right * horizInput;
-
-        if (OnSlope() && !exitingSlope)
+        if (!restricted)
         {
-            rb.AddForce(GetSlopeMDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+            //move calc dir
+            moveDirection = orientation.forward * vertInput + orientation.right * horizInput;
 
-            if (rb.velocity.y > 0)
+            if (OnSlope() && !exitingSlope)
             {
-                rb.AddForce(Vector3.down * 10f, ForceMode.Force);
+                rb.AddForce(GetSlopeMDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+
+                if (rb.velocity.y > 0)
+                {
+                    rb.AddForce(Vector3.down * 10f, ForceMode.Force);
+                }
             }
+
+            if (grounded)
+            {
+                rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            }
+
+            else if (!grounded)
+            {
+                rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            }
+
+            rb.useGravity = !OnSlope();
         }
 
-        if (grounded)
+        else
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            return;
         }
-
-        else if(!grounded)
-        {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        }
-
-        rb.useGravity = !OnSlope();
     }
 
     void StateHandler()
@@ -173,7 +180,7 @@ public class Player_Movement : MonoBehaviour
             moveSpeed = 999f;
             return;
         }
-        if (Input.GetKeyDown(crouchKey))
+        else if (Input.GetKeyDown(crouchKey))
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;

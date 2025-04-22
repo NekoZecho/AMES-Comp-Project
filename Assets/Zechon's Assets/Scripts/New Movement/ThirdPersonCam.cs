@@ -12,6 +12,9 @@ public class ThirdPersonCam : MonoBehaviour
     public Transform combatLookAt;
     public GameObject thirdPersonCam;
     public GameObject combatCam;
+    public GameObject climbingCam;
+    private LedgeGrabbing ledge;
+    public GameObject plyr;
 
     [Header("Floats")]
     public float rotateSpeed;
@@ -21,7 +24,8 @@ public class ThirdPersonCam : MonoBehaviour
     public enum CameraStyle
     {
         Basic,
-        Combat
+        Combat,
+        Climbing
     }
 
     private void Start()
@@ -29,20 +33,27 @@ public class ThirdPersonCam : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SwitchCameraStyle(CameraStyle.Basic);
+        ledge = plyr.GetComponent<LedgeGrabbing>();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (ledge.holding)
         {
-            SwitchCameraStyle(CameraStyle.Basic);
-        }
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            SwitchCameraStyle(CameraStyle.Combat);
+            //SwitchCameraStyle(CameraStyle.Climbing);
         }
 
-        Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
+            if (Input.GetKeyDown(KeyCode.Keypad0))
+            {
+                SwitchCameraStyle(CameraStyle.Basic);
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                SwitchCameraStyle(CameraStyle.Combat);
+            }
+
+
+            Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
         orientation.forward = viewDir.normalized;
 
         if (currentStyle == CameraStyle.Basic)
@@ -71,6 +82,7 @@ public class ThirdPersonCam : MonoBehaviour
     {
         combatCam.SetActive(false);
         thirdPersonCam.SetActive(false);
+        climbingCam.SetActive(false);
 
         if (newStyle == CameraStyle.Basic)
         {
@@ -79,6 +91,10 @@ public class ThirdPersonCam : MonoBehaviour
         if (newStyle == CameraStyle.Combat)
         {
             combatCam.SetActive(true);
+        }
+        if (newStyle == CameraStyle.Climbing)
+        {
+            climbingCam.SetActive(true);
         }
 
         currentStyle = newStyle;
