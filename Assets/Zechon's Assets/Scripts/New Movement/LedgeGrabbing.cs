@@ -92,14 +92,6 @@ public class LedgeGrabbing : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(castPos, .2f);
-        Gizmos.DrawLine(castPos, orientation.forward);
-        Gizmos.DrawLine(cam.transform.position, cam.transform.forward);
-    }
-
     //checks for ledges, simple enough
     private void LedgeDetection()
     {
