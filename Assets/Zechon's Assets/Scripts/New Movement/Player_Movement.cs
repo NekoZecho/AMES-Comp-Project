@@ -182,21 +182,34 @@ public class Player_Movement : MonoBehaviour
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
+            anim.SetBool("Walking", false);
         }
         else if (grounded && Input.GetKey(sprintKey) && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
-            //anim.SetBool("Walking", false);
+            //anim.SetBool("Sprinting", false);
+            anim.SetBool("Walking", false);
         }
         else if (grounded && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
+            if (vertInput != 0 || horizInput != 0)
+            {
+                anim.SetBool("Idle", false);
+                anim.SetBool("Walking", true);
+            }
+            else
+            {
+                anim.SetBool("Walking", false);
+                anim.SetBool("Idle", true);
+            }
         }
         else
         {
             state = MovementState.air;
+            anim.SetBool("Walking", false);
         }
     }
 
