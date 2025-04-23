@@ -80,8 +80,6 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(moveSpeed);
-        Debug.Log(grounded);
         // is there ground below me???
         grounded = Physics.Raycast(transform.position, Vector3.down, plyrHeight * 0.5f + 0.2f, thisIsGround);
 

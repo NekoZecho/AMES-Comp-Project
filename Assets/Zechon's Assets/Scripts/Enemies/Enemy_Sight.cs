@@ -43,7 +43,7 @@ public class Enemy_Sight : MonoBehaviour
         suspicious,
         aggressive
     }
-    public int EnemyMode;
+    public int enemyMode;
 
     void Start()
     {
@@ -63,7 +63,7 @@ public class Enemy_Sight : MonoBehaviour
         susPT = 0;
         aggroPT = 0;
 
-        EnemyMode = 0;
+        enemyMode = 0;
 }
 
     void Update()
@@ -82,6 +82,7 @@ public class Enemy_Sight : MonoBehaviour
                     {
                         awarePT = unToAwareT;
                         awareProgress = 1;
+                        enemyMode = 1;
                     }
                 }
 
@@ -129,7 +130,12 @@ public class Enemy_Sight : MonoBehaviour
                 break;
 
             case false:
-                if (aggroPT != 0)
+                if (aggroPT != 0 && aggroProgress == 1)
+                {
+                    eState = EnemyState.aggressive;
+                }
+
+                else if (aggroPT != 0)
                 {
                     eState = EnemyState.aggressive;
 
@@ -174,6 +180,7 @@ public class Enemy_Sight : MonoBehaviour
 
                 else if (awarePT == 0)
                 {
+                    enemyMode = 0;
                     eState = EnemyState.unaware;
                     awareProgress = 0;
                 }
@@ -185,9 +192,8 @@ public class Enemy_Sight : MonoBehaviour
     {
         Vector3 dirToPlayer = player.position - eyes.position;
         float angle = Vector3.Angle(dirToPlayer, eyes.forward);
-        Debug.DrawRay(eyes.position, dirToPlayer);
 
-        if (angle < fieldOfViewAngle / 2)
+        if (angle < (fieldOfViewAngle / 2))
         {
             if (Vector3.Distance(eyes.position, player.position) < detectionRange)
             {

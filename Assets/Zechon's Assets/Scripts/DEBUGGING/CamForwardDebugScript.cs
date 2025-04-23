@@ -13,7 +13,6 @@ public class CamForwardDebugScript : MonoBehaviour
 
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, layermask))
         {
-            Debug.Log(hit.collider.gameObject.name);
             Debug.DrawLine(transform.position, hit.transform.position, Color.blue);
         }
     }
