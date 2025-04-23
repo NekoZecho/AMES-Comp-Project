@@ -185,7 +185,7 @@ public class Player_Movement : MonoBehaviour
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
         }
-        else if (grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey) && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
