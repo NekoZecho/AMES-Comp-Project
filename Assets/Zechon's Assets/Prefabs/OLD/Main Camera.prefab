@@ -30,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6847954448307630631}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.109168716, y: 0.23177734, z: -0.026186116, w: 0.966269}
+  m_LocalRotation: {x: 0.10917011, y: 0.23177554, z: -0.026186245, w: 0.96626925}
   m_LocalPosition: {x: -0.8401951, y: 3.255428, z: -17.899136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 12.892, y: 26.977, z: 0}
 --- !u!20 &1923075326340187177
 Camera:
   m_ObjectHideFlags: 0
@@ -195,7 +195,9 @@ MonoBehaviour:
   combatCam: {fileID: 0}
   climbingCam: {fileID: 0}
   plyr: {fileID: 0}
-  rotateSpeed: 7.75
+  rotateSpeed: 7.5
+  rotationSpeed: 5
+  rotationDur: 1
   currentStyle: 0
 --- !u!114 &7635692356738619557
 MonoBehaviour:

@@ -7,10 +7,11 @@ public class Player_Movement : MonoBehaviour
     [Header("References")]
     public Transform orientation;
     [SerializeField]
-    Animator anim;
-    [SerializeField]
     CapsuleCollider clldr;
+    [SerializeField]
+    GameObject plyr_Obj;
     Rigidbody rb;
+    private Player_Anims anim; 
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -56,7 +57,7 @@ public class Player_Movement : MonoBehaviour
     Vector3 moveDirection;
 
 
-    
+    [Header("State")]
     public MovementState state;
     public enum MovementState
     {
@@ -76,6 +77,8 @@ public class Player_Movement : MonoBehaviour
         readyToJump = true;
 
         startYScale = clldr.height;
+
+        anim = plyr_Obj.GetComponent<Player_Anims>();
     }
 
     void Update()
@@ -115,17 +118,6 @@ public class Player_Movement : MonoBehaviour
             Jump();
 
             Invoke(nameof(JumpReset), jumpCD);
-        }
-
-        if (Input.GetKeyDown(crouchKey))
-        {
-            clldr.height = startYScale * crouchYScale;
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-        }
-
-        if (Input.GetKeyUp(crouchKey))
-        {
-            clldr.height = startYScale;
         }
     }
 
@@ -182,34 +174,30 @@ public class Player_Movement : MonoBehaviour
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
-            anim.SetBool("Walking", false);
+            anim.moveRefState = "crouching";
         }
         else if (grounded && Input.GetKey(sprintKey) && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
-            //anim.SetBool("Sprinting", false);
-            anim.SetBool("Walking", false);
+            anim.moveRefState = "sprinting";
         }
         else if (grounded && !(Input.GetKey(crouchKey)))
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
-            if (vertInput != 0 || horizInput != 0)
+            if (vertInput != 0 || horizInput != 0 || vertInput != 0 && horizInput != 0)
             {
-                anim.SetBool("Idle", false);
-                anim.SetBool("Walking", true);
+                anim.moveRefState = "walking";
             }
             else
             {
-                anim.SetBool("Walking", false);
-                anim.SetBool("Idle", true);
+                anim.moveRefState = "idle";
             }
         }
         else
         {
             state = MovementState.air;
-            anim.SetBool("Walking", false);
         }
     }
 

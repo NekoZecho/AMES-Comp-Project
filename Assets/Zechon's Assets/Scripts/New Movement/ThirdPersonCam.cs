@@ -16,9 +16,12 @@ public class ThirdPersonCam : MonoBehaviour
     private LedgeGrabbing ledge;
     public GameObject plyr;
 
-    [Header("Floats")]
+    [Header("Floats and Quaternions")]
     public float rotateSpeed;
-
+    public float rotationSpeed;
+    public float rotationDur;
+    float horizontalInput;
+    float verticalInput;
 
     public CameraStyle currentStyle;
     public enum CameraStyle
@@ -52,17 +55,27 @@ public class ThirdPersonCam : MonoBehaviour
                 SwitchCameraStyle(CameraStyle.Combat);
             }
 
+        if (rb.velocity.magnitude > 0.1f)
+        {
+            Vector3 camForward = transform.forward;
+            camForward.y = 0f;
+            camForward.Normalize();
 
-            Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-        orientation.forward = viewDir.normalized;
+            if (camForward.sqrMagnitude > 0.001f)
+            {
+                // Create target rotation and smoothly rotate toward it
+                Quaternion targetRotation = Quaternion.LookRotation(camForward);
+                orientation.rotation = Quaternion.Slerp(orientation.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+        }
 
         if (currentStyle == CameraStyle.Basic)
         {
             //You spin me right round, baby right round
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+            horizontalInput = Input.GetAxis("Horizontal");
+            verticalInput = Input.GetAxis("Vertical");
             Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
+            
             if (inputDir != Vector3.zero)
             {
                 plyrObj.forward = Vector3.Slerp(plyrObj.forward, inputDir.normalized, Time.deltaTime * rotateSpeed);
