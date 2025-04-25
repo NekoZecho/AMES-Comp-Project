@@ -5,6 +5,7 @@ using UnityEngine;
 public class Attack_System : MonoBehaviour
 {
     [Header("Keybinds")]
+    public KeyCode attkEnter = KeyCode.Keypad2;
     public KeyCode lightAttack = KeyCode.Mouse0;
     public KeyCode heavyAttack = KeyCode.Mouse1;
     public KeyCode block = KeyCode.F;
@@ -34,16 +35,18 @@ public class Attack_System : MonoBehaviour
     public int blockedHits;
 
     [Header("Components")]
-    Animator animator;
+    [SerializeField]
+    Animator anim;
     Collider RightHand;
     Collider LeftHand;
 
     [Header("Bools")]
+    public bool rightHandActive;
+    public bool stance;
     private bool attacking;
     private bool blocking;
     private bool dodging;
     private bool stunned;
-    public bool rightHandActive;
 
     [Header("Player Attack")]
     public PlayerAttackState pAState;
@@ -58,8 +61,6 @@ public class Attack_System : MonoBehaviour
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-
         pAState = PlayerAttackState.passive;
 
         rightHandActive = true;
@@ -69,6 +70,8 @@ public class Attack_System : MonoBehaviour
         nyaBR = blockRecup;
 
         timeSinceLastHit = 0;
+
+        anim.SetBool("rightHandActive", true);
     }
 
     void Update()
@@ -105,8 +108,24 @@ public class Attack_System : MonoBehaviour
 
     private void Attack()
     {
+        if (Input.GetKeyDown(attkEnter))
+        {
+            if (!stance)
+            {
+                stance = true;
+                anim.SetBool("Stance", true);
+                anim.SetBool("Idle", false);
+            }
+            else
+            {
+                stance = false;
+                anim.SetBool("Stance", false);
+                anim.SetBool("Idle", true);
+            }
+        }
+
         //light attack, duh
-        if (Input.GetKeyDown(lightAttack))
+        else if (Input.GetKeyDown(lightAttack))
         {
             if (!stunned && !blocking && !attacking && lAttackDuration == 0 && hAttackDuration == 0)
             {
@@ -118,8 +137,7 @@ public class Attack_System : MonoBehaviour
                         timeSinceLastHit = 0;
                         consecutiveHits++;
                         lightHits++;
-                        Debug.Log("Light Attack Right!");
-                        rightHandActive = false;
+                        anim.SetBool("LAttack", true);
                         break;
 
                     case false:
@@ -128,8 +146,8 @@ public class Attack_System : MonoBehaviour
                         timeSinceLastHit = 0;
                         consecutiveHits++;
                         lightHits++;
-                        Debug.Log("Light Attack Left!");
                         rightHandActive = true;
+                        anim.SetBool("LAttack", true);
                         break;
                 }
                 
@@ -148,7 +166,6 @@ public class Attack_System : MonoBehaviour
                         timeSinceLastHit = 0;
                         consecutiveHits++;
                         heavyHits++;
-                        Debug.Log("Heavy Attack Right!");
                         rightHandActive = false;
                         break;
 
@@ -158,7 +175,6 @@ public class Attack_System : MonoBehaviour
                         timeSinceLastHit = 0;
                         consecutiveHits++;
                         heavyHits++;
-                        Debug.Log("Heavy Attack Left!");
                         rightHandActive = true;
                         break;
                 }
@@ -215,10 +231,24 @@ public class Attack_System : MonoBehaviour
         }
     }
 
+    private void HandToggle()
+    {
+        unAttack();
+        if (rightHandActive)
+        {
+            rightHandActive = false;
+            anim.SetBool("rightHandActive", false);
+        }
+        else
+        {
+            rightHandActive = true;
+            anim.SetBool("rightHandActive", true);
+        }
+    }
+
     private void unAttack()
     {
-        attacking = false;
-        lAttackDuration = lAtkD;
+        anim.SetBool("LAttack", false);
     }
 
     private void lHit()
