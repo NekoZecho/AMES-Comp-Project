@@ -89,6 +89,7 @@ public class Player_Movement : MonoBehaviour
         InputTimeWahoo();
         DontSpeed();
         StateHandler();
+        AnimStringHandler();
 
         //this ground be havin friction (drag)
         if (grounded)
@@ -170,11 +171,10 @@ public class Player_Movement : MonoBehaviour
             moveSpeed = 999f;
             return;
         }
-        else if (Input.GetKeyDown(crouchKey))
+        else if (Input.GetKey(crouchKey) && grounded)
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
-            anim.moveRefState = "crouching";
         }
         else if (grounded && Input.GetKey(sprintKey) && !(Input.GetKey(crouchKey)))
         {
@@ -186,7 +186,7 @@ public class Player_Movement : MonoBehaviour
         {
             state = MovementState.walking;
             moveSpeed = walkSpeed;
-            if (vertInput != 0 || horizInput != 0 || vertInput != 0 && horizInput != 0)
+            if (vertInput != 0 || horizInput != 0)
             {
                 anim.moveRefState = "walking";
             }
@@ -257,5 +257,20 @@ public class Player_Movement : MonoBehaviour
     public Vector3 GetSlopeMDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+
+    private void AnimStringHandler()
+    {
+        if (state == MovementState.crouching)
+        {
+            if (vertInput != 0 || horizInput != 0)
+            {
+                anim.moveRefState = "crouchWalking";
+            }
+            else
+            {
+                anim.moveRefState = "crouching";
+            }
+        }
     }
 }

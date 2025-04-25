@@ -67,6 +67,19 @@ public class Player_Anims : MonoBehaviour
                     anim.SetBool("Crouching", true);
                 }
                 break;
+
+            case "crouchWalking":
+                anim.SetBool("Idle", false);
+                //anim.SetBool("Sprinting", false);
+                anim.SetBool("Jumping", false);
+                anim.SetBool("Falling", false);
+
+                if (anim.GetBool("Crouching") == false || anim.GetBool("Walking") == false)
+                {
+                    anim.SetBool("Crouching", true);
+                    anim.SetBool("Walking", true);
+                }
+                break;
         }
     }
 }
