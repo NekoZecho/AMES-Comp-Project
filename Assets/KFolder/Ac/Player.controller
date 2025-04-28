@@ -79,7 +79,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &-7385900751972987329
 AnimatorState:
   serializedVersion: 6
@@ -167,7 +167,13 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Block
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: rightHandActive
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7385900751972987329}
   m_Solo: 0
@@ -181,7 +187,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &-5677772127162381940
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -203,7 +209,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &-5600627730817996925
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -217,6 +223,9 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: rightHandActive
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: HAttack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 7855120557127945952}
@@ -253,7 +262,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1107 &-4548114241896270931
 AnimatorStateMachine:
   serializedVersion: 6
@@ -367,6 +376,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: rightHandActive
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: HAttack
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2959967072226214581}
   m_Solo: 0
@@ -388,7 +400,13 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Block
+    m_EventTreshold: 0
+  - m_ConditionMode: 1
+    m_ConditionEvent: rightHandActive
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2681268171149729957}
   m_Solo: 0
@@ -402,7 +420,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &-3079250337832014129
 AnimatorState:
   serializedVersion: 6
@@ -517,6 +535,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Stance
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: rightHandActive
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3824620549627283421}
   m_Solo: 0
@@ -599,6 +620,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: rightHandActive
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: LAttack
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3079250337832014129}
   m_Solo: 0
@@ -612,7 +636,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -694,10 +718,16 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: Blend
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
-    m_Name: Combat
-    m_StateMachine: {fileID: 4177067038341080256}
+    m_Name: Movement
+    m_StateMachine: {fileID: -4548114241896270931}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -708,8 +738,8 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Movement
-    m_StateMachine: {fileID: -4548114241896270931}
+    m_Name: Combat
+    m_StateMachine: {fileID: 4177067038341080256}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -818,7 +848,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &963511178779274389
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -868,7 +898,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &1472783421823338536
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -879,6 +909,12 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: HAttack
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: rightHandActive
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: LAttack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2728753337745181307}
@@ -893,7 +929,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &1786912335929486316
 AnimatorState:
   serializedVersion: 6
@@ -954,7 +990,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LLAttack
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -1144,7 +1180,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &6546853584935483209
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1233,7 +1269,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RLAttack
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
