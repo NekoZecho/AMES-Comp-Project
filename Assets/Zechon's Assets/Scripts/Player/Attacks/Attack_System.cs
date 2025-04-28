@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 public class Attack_System : MonoBehaviour
 {
@@ -13,11 +14,11 @@ public class Attack_System : MonoBehaviour
 
     [Header("Cooldowns / Debounces")]
     [SerializeField]
-    float lAttackDuration;
-    float lAtkD;
+    float lAttackCooldown;
+    float lAtkCD;
     [SerializeField]
-    float hAttackDuration;
-    float hAtkD;
+    float hAttackCooldown;
+    float hAtkCD;
     [SerializeField]
     float blockRecup;
     float nyaBR;
@@ -33,11 +34,14 @@ public class Attack_System : MonoBehaviour
     public int lightHits;
     public int heavyHits;
     public int blockedHits;
+    int swapNum;
 
     [Header("Components")]
     [SerializeField]
     Animator anim;
+    [SerializeField]
     Collider RightHand;
+    [SerializeField]
     Collider LeftHand;
 
     [Header("Bools")]
@@ -65,13 +69,16 @@ public class Attack_System : MonoBehaviour
 
         rightHandActive = true;
 
-        lAtkD = lAttackDuration;
-        hAtkD = hAttackDuration;
+        lAtkCD = lAttackCooldown;
+        hAtkCD = hAttackCooldown;
         nyaBR = blockRecup;
 
         timeSinceLastHit = 0;
 
         anim.SetBool("rightHandActive", true);
+
+        RightHand.enabled = false;
+        LeftHand.enabled = false;
     }
 
     void Update()
@@ -113,101 +120,72 @@ public class Attack_System : MonoBehaviour
             if (!stance)
             {
                 stance = true;
+                anim.SetLayerWeight(1, 1f);
+                anim.SetLayerWeight(0, 0f);
                 anim.SetBool("Stance", true);
-                anim.SetBool("Idle", false);
             }
             else
             {
                 stance = false;
+                anim.SetLayerWeight(1, 0f);
+                anim.SetLayerWeight(0, 1f);
                 anim.SetBool("Stance", false);
-                anim.SetBool("Idle", true);
             }
         }
 
-        //light attack, duh
-        else if (Input.GetKeyDown(lightAttack))
+        if (stance)
         {
-            if (!stunned && !blocking && !attacking && lAttackDuration == 0 && hAttackDuration == 0)
+            //light attack, duh
+            if (Input.GetKeyDown(lightAttack))
             {
-                switch (rightHandActive)
+                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !(anim.GetBool("HAttack")))
                 {
-                    case true:
-                        attacking = true;
-                        lAttackDuration = lAtkD;
-                        timeSinceLastHit = 0;
-                        consecutiveHits++;
-                        lightHits++;
-                        anim.SetBool("LAttack", true);
-                        break;
-
-                    case false:
-                        attacking = true;
-                        lAttackDuration = lAtkD;
-                        timeSinceLastHit = 0;
-                        consecutiveHits++;
-                        lightHits++;
-                        rightHandActive = true;
-                        anim.SetBool("LAttack", true);
-                        break;
+                    lAttack();
                 }
-                
             }
-        }
-        //heavy attack, (heavy tf2 reference!!!)
-        if (Input.GetKeyDown(heavyAttack))
-        {
-            if (!stunned && !blocking && !attacking && lAttackDuration == 0 && hAttackDuration == 0)
+            //heavy attack, (heavy tf2 reference!!!)
+            if (Input.GetKeyDown(heavyAttack))
             {
-                switch (rightHandActive)
+                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !(anim.GetBool("LAttack")))
                 {
-                    case true:
-                        attacking = true;
-                        hAttackDuration = hAtkD;
-                        timeSinceLastHit = 0;
-                        consecutiveHits++;
-                        heavyHits++;
-                        rightHandActive = false;
-                        break;
-
-                    case false:
-                        attacking = true;
-                        hAttackDuration = hAtkD;
-                        timeSinceLastHit = 0;
-                        consecutiveHits++;
-                        heavyHits++;
-                        rightHandActive = true;
-                        break;
+                    hAttack();
+                }
+            }
+            //blocking
+            if (Input.GetKeyDown(block))
+            {
+                if (!stunned && !attacking && blockRecup == 0)
+                {
+                    //Block();
                 }
             }
         }
-        //blocking
-        if (Input.GetKeyDown(block))
-        {
-            if (!stunned && !attacking && blockRecup == 0)
-            {
-                blocking = true;
-            }
-        }
-
     }
+
+    public void OnHandTrigger(Collider other)
+    {
+        timeSinceLastHit = 0;
+        Debug.Log(other.gameObject.name);
+    }
+
 
     private void Timers()
     {
         //Cooldown Timers and stuff
-        if (lAttackDuration != 0)
+        if (lAttackCooldown != 0)
         {
-            lAttackDuration -= Time.deltaTime;
-            if (lAttackDuration < 0)
+            lAttackCooldown -= Time.deltaTime;
+            if (lAttackCooldown < 0)
             {
-                lAttackDuration = 0;
+                lAttackCooldown = 0;
             }
         }
-        if (hAttackDuration != 0)
+        if (hAttackCooldown != 0)
         {
-            hAttackDuration -= Time.deltaTime;
-            if (hAttackDuration < 0)
+            hAttackCooldown -= Time.deltaTime;
+            if (hAttackCooldown < 0)
             {
-                hAttackDuration = 0;
+                hAttackCooldown = 0;
             }
         }
         if (blockRecup != 0)
@@ -218,7 +196,7 @@ public class Attack_System : MonoBehaviour
                 blockRecup = 0;
             }
         }
-        if (lAttackDuration == 0 && hAttackDuration == 0)
+        if (lAttackCooldown == 0 && hAttackCooldown == 0)
         {
             attacking = false;
         }
@@ -233,33 +211,123 @@ public class Attack_System : MonoBehaviour
 
     private void HandToggle()
     {
-        unAttack();
-        if (rightHandActive)
+        
+        if (anim.GetBool("HAttack"))
         {
-            rightHandActive = false;
-            anim.SetBool("rightHandActive", false);
+            if (rightHandActive)
+            {
+                swapNum = 0;
+                rightHandActive = false;
+                anim.SetBool("rightHandActive", false);
+            }
+            else
+            {
+                swapNum = 0;
+                rightHandActive = true;
+                anim.SetBool("rightHandActive", true);
+            }
         }
         else
         {
-            rightHandActive = true;
-            anim.SetBool("rightHandActive", true);
+            swapNum ++;
+            switch (swapNum)
+            {
+                case 2:
+                    if (rightHandActive)
+                    {
+                        rightHandActive = false;
+                        anim.SetBool("rightHandActive", false);
+                    }
+                    else
+                    {
+                        rightHandActive = true;
+                        anim.SetBool("rightHandActive", true);
+                    }
+                    break;
+
+                case 3:
+                    if (rightHandActive)
+                    {
+                        rightHandActive = false;
+                        anim.SetBool("rightHandActive", false);
+                    }
+                    else
+                    {
+                        rightHandActive = true;
+                        anim.SetBool("rightHandActive", true);
+                    }
+                    break;
+
+                case 4:
+                    if (rightHandActive)
+                    {
+                        swapNum = 0;
+                        rightHandActive = false;
+                        anim.SetBool("rightHandActive", false);
+                    }
+                    else
+                    {
+                        swapNum = 0;
+                        rightHandActive = true;
+                        anim.SetBool("rightHandActive", true);
+                    }
+                    break;
+            }
+        }
+        unAttack();
+    }
+    private void unAttack()
+    {
+        if (anim.GetBool("LAttack"))
+        {
+            anim.SetBool("LAttack", false);
+            anim.SetBool("Stance", true);
+            lAttackCooldown = lAtkCD;
+            Debug.Log("L");
+        }
+        else if (anim.GetBool("HAttack"))
+        {
+            anim.SetBool("HAttack", false);
+            anim.SetBool("Stance", true);
+            hAttackCooldown = hAtkCD;
+            Debug.Log("H");
         }
     }
 
-    private void unAttack()
+    private void lAttack()
     {
-        anim.SetBool("LAttack", false);
+        attacking = true;
+        anim.SetBool("Stance", false);
+        anim.SetBool("LAttack", true);
+    }
+
+    private void hAttack()
+    {
+        attacking = true;
+        anim.SetBool("Stance", false);
+        anim.SetBool("HAttack", true);
     }
 
     private void lHit()
     {
-        lAttackDuration = lAtkD;
         timeSinceLastHit = 0;
+        consecutiveHits++;
+        lightHits++;
     }
+
     private void hHit()
     {
-        hAttackDuration = hAtkD;
         timeSinceLastHit = 0;
+        consecutiveHits++;
+        heavyHits++;
+    }
+
+    private void Block()
+    {
+        //blocking = true;
+        stance = false;
+        anim.SetBool("Stance", false);
+        //anim.SetBool("Block", true);
     }
 
     private void unBlock()
@@ -273,29 +341,27 @@ public class Attack_System : MonoBehaviour
         unBlock();
     }
 
-    private void colliderToggle()
+    private void colliderEnable()
     {
         if (rightHandActive)
         {
-            if (RightHand.enabled == true)
-            {
-                RightHand.enabled = false;
-            }
-            else
-            {
                 RightHand.enabled = true;
-            }
         }
         else
         {
-            if (LeftHand.enabled == true)
-            {
-                LeftHand.enabled = false;
-            }
-            else
-            {
                 LeftHand.enabled = true;
-            }
+        }
+    }
+
+    private void colliderDisable()
+    {
+        if (rightHandActive)
+        {
+            RightHand.enabled = false;
+        }
+        else
+        {
+            LeftHand.enabled = false;
         }
     }
 }
