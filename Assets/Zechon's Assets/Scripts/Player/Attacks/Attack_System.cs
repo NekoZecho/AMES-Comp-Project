@@ -6,30 +6,29 @@ using UnityEngine.Experimental.Rendering;
 public class Attack_System : MonoBehaviour
 {
     [Header("Keybinds")]
-    public KeyCode attkEnter = KeyCode.Keypad2;
     public KeyCode lightAttack = KeyCode.Mouse0;
     public KeyCode heavyAttack = KeyCode.Mouse1;
     public KeyCode block = KeyCode.F;
     public KeyCode dodge = KeyCode.R;
 
     [Header("Cooldowns / Debounces")]
-    [SerializeField]
-    float lAttackCooldown;
+    [SerializeField] float lAttackCooldown;
     float lAtkCD;
-    [SerializeField]
-    float hAttackCooldown;
+    [SerializeField] float hAttackCooldown;
     float hAtkCD;
-    [SerializeField]
-    float blockRecup;
+    [SerializeField] float blockRecup;
     float nyaBR;
-    [SerializeField]
-    float decisionDuration;
+    [SerializeField] float decisionDuration;
     float decdur;
-    [SerializeField]
-    float comboResiliance;
+    [SerializeField] float comboResiliance;
+    [SerializeField] private float stanceDuration = 3f;
+    private Coroutine stanceTimeoutRoutine;
+    private bool canAttackAfterStance = true;
+    [SerializeField] float stanceEntryDelay = 0.2f; // How long before attacks are allowed after stance enters
 
     [Header("Hits Info")]
     public float timeSinceLastHit;
+    public float timeSinceLastAttack;
     public int consecutiveHits;
     public int lightHits;
     public int heavyHits;
@@ -54,6 +53,8 @@ public class Attack_System : MonoBehaviour
 
     [Header("Player Attack")]
     public PlayerAttackState pAState;
+
+    private Coroutine stanceRoutine;
     public enum PlayerAttackState
     {
         passive,
@@ -113,45 +114,68 @@ public class Attack_System : MonoBehaviour
         }
     }
 
+    public void OnHandTrigger(Collider other)
+    {
+        if (!other.CompareTag("Enemy"))
+            return;
+
+        Enemy_Health enemy = other.GetComponent<Enemy_Health>();
+
+        float damage = 0f;
+
+        if (anim.GetBool("LAttack"))
+        {
+            timeSinceLastHit = 0;
+            consecutiveHits++;
+            lightHits++;
+
+            damage = 10f;
+        }
+        else if (anim.GetBool("HAttack"))
+        {
+            timeSinceLastHit = 0;
+            consecutiveHits++;
+            heavyHits++;
+
+            damage = 25f;
+        }
+
+        enemy.TakeDamage(damage);
+    }
+
     private void Attack()
     {
-        if (Input.GetKeyDown(attkEnter))
+        // Enter stance with heavy attack key if not already in stance
+        if (Input.GetKeyDown(heavyAttack) && !stance)
         {
-            if (!stance)
-            {
-                stance = true;
-                anim.SetLayerWeight(1, 1f);
-                anim.SetLayerWeight(0, 0f);
-                anim.SetBool("Stance", true);
-            }
-            else
-            {
-                stance = false;
-                anim.SetLayerWeight(1, 0f);
-                anim.SetLayerWeight(0, 1f);
-                anim.SetBool("Stance", false);
-            }
+            EnterStance();
+            Debug.Log("Entering The Stance");
         }
 
         if (stance)
         {
-            //light attack, duh
+            if (!canAttackAfterStance)
+                return; // prevent attacking immediately after stance activation
+
+            // Light Attack
             if (Input.GetKeyDown(lightAttack))
             {
-                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !(anim.GetBool("HAttack")))
+                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !anim.GetBool("HAttack"))
                 {
                     lAttack();
                 }
             }
-            //heavy attack, (heavy tf2 reference!!!)
+
+            // Heavy Attack
             if (Input.GetKeyDown(heavyAttack))
             {
-                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !(anim.GetBool("LAttack")))
+                if (!stunned && !blocking && !attacking && lAttackCooldown == 0 && hAttackCooldown == 0 && !anim.GetBool("LAttack"))
                 {
                     hAttack();
                 }
             }
-            //blocking
+
+            // Blocking
             if (Input.GetKeyDown(block))
             {
                 if (!stunned && !attacking && blockRecup == 0)
@@ -160,17 +184,13 @@ public class Attack_System : MonoBehaviour
                 }
             }
         }
-    }
 
-    public void OnHandTrigger(Collider other)
-    {
-        timeSinceLastHit = 0;
-        Debug.Log(other.gameObject.name);
     }
-
 
     private void Timers()
     {
+        timeSinceLastAttack += Time.deltaTime;
+
         //Cooldown Timers and stuff
         if (lAttackCooldown != 0)
         {
@@ -276,22 +296,24 @@ public class Attack_System : MonoBehaviour
         }
         unAttack();
     }
+
     private void unAttack()
     {
         if (anim.GetBool("LAttack"))
         {
             anim.SetBool("LAttack", false);
-            anim.SetBool("Stance", true);
             lAttackCooldown = lAtkCD;
-            Debug.Log("L");
         }
         else if (anim.GetBool("HAttack"))
         {
             anim.SetBool("HAttack", false);
-            anim.SetBool("Stance", true);
             hAttackCooldown = hAtkCD;
-            Debug.Log("H");
         }
+
+        attacking = false;
+        anim.SetBool("Stance", true);
+
+        stanceTimeoutRoutine = StartCoroutine(StanceTimeout());
     }
 
     private void lAttack()
@@ -299,6 +321,8 @@ public class Attack_System : MonoBehaviour
         attacking = true;
         anim.SetBool("Stance", false);
         anim.SetBool("LAttack", true);
+
+        timeSinceLastAttack = 0f;
     }
 
     private void hAttack()
@@ -306,20 +330,8 @@ public class Attack_System : MonoBehaviour
         attacking = true;
         anim.SetBool("Stance", false);
         anim.SetBool("HAttack", true);
-    }
 
-    private void lHit()
-    {
-        timeSinceLastHit = 0;
-        consecutiveHits++;
-        lightHits++;
-    }
-
-    private void hHit()
-    {
-        timeSinceLastHit = 0;
-        consecutiveHits++;
-        heavyHits++;
+        timeSinceLastAttack = 0f;
     }
 
     private void Block()
@@ -333,12 +345,6 @@ public class Attack_System : MonoBehaviour
     private void unBlock()
     {
         blocking = false;
-    }
-
-    private void defaultStance()
-    {
-        unAttack();
-        unBlock();
     }
 
     private void colliderEnable()
@@ -364,4 +370,102 @@ public class Attack_System : MonoBehaviour
             LeftHand.enabled = false;
         }
     }
+
+    IEnumerator SmoothLayerTransition(bool enableStance)
+    {
+        float duration = 0.5f; // duration of the transition
+        float time = 0f;
+
+        float startLayer0 = anim.GetLayerWeight(0);
+        float startLayer1 = anim.GetLayerWeight(1);
+
+        float targetLayer0 = enableStance ? 0f : 1f;
+        float targetLayer1 = enableStance ? 1f : 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            anim.SetLayerWeight(0, Mathf.Lerp(startLayer0, targetLayer0, t));
+            anim.SetLayerWeight(1, Mathf.Lerp(startLayer1, targetLayer1, t));
+
+            yield return null;
+        }
+
+        // Ensure final values are set
+        anim.SetLayerWeight(0, targetLayer0);
+        anim.SetLayerWeight(1, targetLayer1);
+    }
+    private void EnterStance()
+    {
+        Debug.Log("Entered Stance");
+        if (stance)
+            return; // already in stance — don't restart everything
+
+        stance = true;
+        canAttackAfterStance = false;
+
+        // Stop any ongoing stance transition or timeout
+        if (stanceRoutine != null)
+            StopCoroutine(stanceRoutine);
+        if (stanceTimeoutRoutine != null)
+            StopCoroutine(stanceTimeoutRoutine);
+
+        stanceRoutine = StartCoroutine(SmoothLayerTransition(true));
+        stanceTimeoutRoutine = StartCoroutine(StanceTimeout());
+
+        anim.SetBool("Stance", true);
+
+        StartCoroutine(AllowAttacksAfterDelay());
+    }
+
+    private void ExitStance()
+    {
+        stance = false;
+        anim.SetBool("Stance", false);
+        if (stanceRoutine != null)
+            StopCoroutine(stanceRoutine);
+        stanceRoutine = StartCoroutine(SmoothLayerTransition(false));
+    }
+
+    private IEnumerator StanceTimeout()
+    {
+        float inactivityTimer = 0f;
+        float timeSinceEnteredStance = 0f;
+
+        while (inactivityTimer < stanceDuration)
+        {
+            bool isBusy = attacking || anim.GetBool("LAttack") || anim.GetBool("HAttack");
+
+            // Increment time since entering stance
+            timeSinceEnteredStance += Time.deltaTime;
+
+            // Log for debugging
+            //Debug.Log($"Busy: {isBusy}, Time Since Last Attack: {timeSinceLastAttack:F2}, Time Since Entered Stance: {timeSinceEnteredStance:F2}, Inactivity: {inactivityTimer:F2}, StanceDUR: {stanceDuration}, Attacking: {attacking}, Anims(L & H): {anim.GetBool("LAttack")} & {anim.GetBool("HAttack")}");
+
+            // If not busy, allow the inactivity timer to count
+            if (!isBusy)
+            {
+                inactivityTimer += Time.deltaTime;
+            }
+            else
+            {
+                inactivityTimer = 0f; // Reset inactivity timer if the player is busy (attacking)
+            }
+
+            // Wait for the next frame
+            yield return null;
+        }
+
+        // Exit stance after timer reaches the limit
+        ExitStance();
+    }
+
+    private IEnumerator AllowAttacksAfterDelay()
+    {
+        yield return new WaitForSeconds(stanceEntryDelay);
+        canAttackAfterStance = true;
+    }
+
 }

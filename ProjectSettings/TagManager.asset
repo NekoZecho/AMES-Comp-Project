@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Player_Body
+  - RightHand
+  - LeftHand
+  - Enemy
   layers:
   - Default
   - TransparentFX

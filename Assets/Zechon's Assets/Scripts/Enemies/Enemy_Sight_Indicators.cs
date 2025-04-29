@@ -27,8 +27,8 @@ public class Enemy_Sight_Indicators : MonoBehaviour
     void Update()
     {
         aware.fillAmount = Sight.awareProgress;
-        sus.fillAmount = Sight.susProgress;
-        aggro.fillAmount = Sight.aggroProgress;
+        sus.fillAmount = Sight.suspiciousProgress;
+        aggro.fillAmount = Sight.aggressiveProgress;
 
         if (aggro.fillAmount > 0)
         {

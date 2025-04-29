@@ -1860,7 +1860,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 3633
+  m_VersionIndex: 3660
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2189,10 +2189,9 @@ GameObject:
   - component: {fileID: 1569327517287877833}
   - component: {fileID: 532901818200640847}
   - component: {fileID: 4204700989305359824}
-  - component: {fileID: 2522264616900474459}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2254,21 +2253,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 10
-  susRange: 3
+  susRange: 2
   fieldOfViewAngle: 90
   player: {fileID: 0}
   eyes: {fileID: 7403403992070207921}
+  aggroLingerTime: 5
   seen: 0
   inSusRange: 0
-  unToAwareT: 2
-  awareToSusT: 3
-  susToAngyT: 2
+  timeToAware: 2
+  timeToSuspicious: 3
+  timeToAggressive: 2
   fullyDecayed: 0
-  decayTimer: 0
   awareProgress: 0
-  susProgress: 0
-  aggroProgress: 0
-  eState: 0
+  suspiciousProgress: 0
+  aggressiveProgress: 0
+  currentState: 0
   enemyMode: 0
 --- !u!195 &4204700989305359824
 NavMeshAgent:
@@ -2292,23 +2291,6 @@ NavMeshAgent:
   m_BaseOffset: 2.8
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2522264616900474459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4327222475049869097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a71a2bdf77e33d4884d65419d8d8733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  speed: 15
-  angSpeed: 10
 --- !u!1 &6025675813003359470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,7 +2357,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5b4b5fb37adfe6c4ebd1abc02125096d, type: 2}
+  - {fileID: 2100000, guid: 488f9597e3e5d804d8646099630c8eff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4309,7 +4291,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 3667
+  m_VersionIndex: 3694
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4632,7 +4614,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2423
+  m_VersionIndex: 2450
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4948,7 +4930,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2423
+  m_VersionIndex: 2450
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5065,9 +5047,11 @@ GameObject:
   - component: {fileID: 588906981920805960}
   - component: {fileID: 2590970557132832209}
   - component: {fileID: 7502557405790644266}
+  - component: {fileID: 403863639286648715}
+  - component: {fileID: 1877196880511720577}
   m_Layer: 0
   m_Name: EnemyObj
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5117,7 +5101,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7d8ce2ea076c8b418aa1937fb166301, type: 2}
+  - {fileID: 2100000, guid: 488f9597e3e5d804d8646099630c8eff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5162,3 +5146,40 @@ CapsuleCollider:
   m_Height: 0.25088018
   m_Direction: 1
   m_Center: {x: -0.0002451803, y: -0.03722391, z: -0.007565043}
+--- !u!114 &403863639286648715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8760169398363542168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff6af2508bf044b9200de894020734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  blockDmgPercent: 0.8
+  blocking: 0
+  enemySight: {fileID: 532901818200640847}
+--- !u!65 &1877196880511720577
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8760169398363542168}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 5120
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.08093472, y: 0.15691327, z: 0.05571082}
+  m_Center: {x: -0.00037073312, y: 0.009759023, z: -0.0037668776}
