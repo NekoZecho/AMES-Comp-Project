@@ -23,6 +23,7 @@ public class Enemy_Sight : MonoBehaviour
     [SerializeField] float timeToSuspicious = 3f;
     [SerializeField] float timeToAggressive = 2f;
     public bool fullyDecayed;
+    public bool hasStared = false;
 
     [Header("Progress")]
     public float awareProgress;
