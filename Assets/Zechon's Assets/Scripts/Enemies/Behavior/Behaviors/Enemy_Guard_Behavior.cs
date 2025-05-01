@@ -10,7 +10,6 @@ public class Enemy_Guard_Behavior : MonoBehaviour, IEnemyBehavior
     [SerializeField] private float guardScanInterval = 4f;
     [SerializeField] private float guardScanDuration = 2f;
     [SerializeField] private float guardScanAngle = 60f;
-    [SerializeField] private float guardScanSpeed = 1.5f;
 
     private float scanTimer = 0f;
     private bool isScanning = false;
