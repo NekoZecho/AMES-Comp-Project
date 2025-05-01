@@ -154,7 +154,7 @@ public class Enemy_Sight : MonoBehaviour
         Vector3 directionToPlayer = player.position - eyes.position;
         float angle = Vector3.Angle(directionToPlayer, eyes.forward);
 
-        if (angle < fieldOfViewAngle / 2 && Vector3.Distance(eyes.position, player.position) < detectionRange)
+        if (angle < (fieldOfViewAngle / 2) && Vector3.Distance(eyes.position, player.position) < detectionRange)
         {
             if (Physics.Raycast(eyes.position, directionToPlayer.normalized, out RaycastHit hit, detectionRange))
             {

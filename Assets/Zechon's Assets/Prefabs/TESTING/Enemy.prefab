@@ -1280,6 +1280,9 @@ GameObject:
   - component: {fileID: 8130795769218376550}
   - component: {fileID: 648695870053891496}
   - component: {fileID: 7607953375627980110}
+  - component: {fileID: 823501975121069636}
+  - component: {fileID: 3419504152937292469}
+  - component: {fileID: 113183967745832168}
   m_Layer: 0
   m_Name: ENEMY
   m_TagString: Untagged
@@ -1397,17 +1400,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   behavior: 0
+  moveSpeed: 3.5
+  turnSpeed: 660
+  chaseSpeed: 5.5
+  anim: {fileID: 8465735847199488826}
+  sight: {fileID: 648695870053891496}
+  agent: {fileID: 0}
+--- !u!114 &823501975121069636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472178668273885335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e59dccb401fd8147ba04a11d3a23074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   waypoints:
   - {fileID: 0}
   - {fileID: 0}
-  speed: 3.5
-  angSpeed: 660
-  anim: {fileID: 8465735847199488826}
-  sight: {fileID: 648695870053891496}
-  stareDuration: 4
-  suspiciousStareDuration: 8
-  rotationSpeed: 5
-  hasReactedToAwareness: 0
+--- !u!114 &3419504152937292469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472178668273885335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58d69b8594c42784d8b5b232dab4c383, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guardScanInterval: 4
+  guardScanDuration: 3
+  guardScanAngle: 60
+  guardScanSpeed: 1.5
+--- !u!114 &113183967745832168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472178668273885335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00f03bbdbfeb204ebd9dd560babbb2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roamRadius: 10
+  waitTime: 4
 --- !u!1 &4738427963484239030
 GameObject:
   m_ObjectHideFlags: 0
