@@ -25,6 +25,16 @@ public class Enemy_Sight : MonoBehaviour
     public bool fullyDecayed;
     public bool hasStared = false;
 
+    public bool isPlayerVisible
+    {
+        get
+        {
+            // Return true if the player is currently within view
+            return seen; // or however you're tracking this internally
+        }
+    }
+
+
     [Header("Progress")]
     public float awareProgress;
     public float suspiciousProgress;
