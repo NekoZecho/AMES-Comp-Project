@@ -66,6 +66,7 @@ public class ThirdPersonCam : MonoBehaviour
                 // Create target rotation and smoothly rotate toward it
                 Quaternion targetRotation = Quaternion.LookRotation(camForward);
                 orientation.rotation = Quaternion.Slerp(orientation.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                Debug.Log($"Rotating to: {targetRotation}");
             }
         }
 
