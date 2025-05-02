@@ -227,7 +227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb8b742eb1a1b8429cc7b37bcbc1cff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attkEnter: 258
   lightAttack: 323
   heavyAttack: 324
   block: 102
@@ -237,7 +236,10 @@ MonoBehaviour:
   blockRecup: 3
   decisionDuration: 3
   comboResiliance: 2
+  stanceDuration: 3
+  stanceEntryDelay: 0.2
   timeSinceLastHit: 0
+  timeSinceLastAttack: 0
   consecutiveHits: 0
   lightHits: 0
   heavyHits: 0
