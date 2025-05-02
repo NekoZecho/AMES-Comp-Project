@@ -11,6 +11,12 @@ public class Enemy_Behavior_Master : MonoBehaviour
     [SerializeField] private float turnSpeed = 120f;
     [SerializeField] private float chaseSpeed = 5.5f;
 
+    [Header("Suspicious Settings")]
+    [SerializeField] private float suspiciousDuration = 5f;
+    [SerializeField] private float suspiciousLookAroundAngle = 45f;
+    [SerializeField] private float suspiciousLookSpeed = 1.2f;
+
+    //just in case
     public float MoveSpeed => moveSpeed;
     public float TurnSpeed => turnSpeed;
     public float ChaseSpeed => chaseSpeed;
