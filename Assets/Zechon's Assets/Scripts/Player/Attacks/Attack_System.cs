@@ -64,6 +64,10 @@ public class Attack_System : MonoBehaviour
         stunned
     }
 
+    [Header("Debug")]
+    [SerializeField] private float ROOTTIME;
+    
+
     void Start()
     {
         pAState = PlayerAttackState.passive;
@@ -80,6 +84,15 @@ public class Attack_System : MonoBehaviour
 
         RightHand.enabled = false;
         LeftHand.enabled = false;
+
+        StartCoroutine(ROOTTOGGLE());
+    }
+
+    IEnumerator ROOTTOGGLE()
+    {
+        yield return new WaitForSeconds(ROOTTIME);
+        anim.applyRootMotion = true;
+        Debug.Log("Run");
     }
 
     void Update()

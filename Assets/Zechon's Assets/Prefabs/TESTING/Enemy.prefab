@@ -1283,6 +1283,8 @@ GameObject:
   - component: {fileID: 823501975121069636}
   - component: {fileID: 3419504152937292469}
   - component: {fileID: 113183967745832168}
+  - component: {fileID: 8700244456860872121}
+  - component: {fileID: 8531044818665176436}
   m_Layer: 0
   m_Name: ENEMY
   m_TagString: Untagged
@@ -1403,6 +1405,9 @@ MonoBehaviour:
   moveSpeed: 3.5
   turnSpeed: 660
   chaseSpeed: 5.5
+  suspiciousDuration: 5
+  suspiciousLookAroundAngle: 45
+  suspiciousLookSpeed: 1.2
   anim: {fileID: 8465735847199488826}
   sight: {fileID: 648695870053891496}
   agent: {fileID: 0}
@@ -1436,7 +1441,6 @@ MonoBehaviour:
   guardScanInterval: 4
   guardScanDuration: 3
   guardScanAngle: 60
-  guardScanSpeed: 1.5
 --- !u!114 &113183967745832168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1449,8 +1453,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00f03bbdbfeb204ebd9dd560babbb2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roamAreaType: 0
   roamRadius: 10
+  roamBounds: []
   waitTime: 4
+--- !u!114 &8700244456860872121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472178668273885335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40c29830f1da8214183c2054c3c3acbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  suspiciousBehavior: {fileID: 0}
+--- !u!114 &8531044818665176436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472178668273885335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09bdec22e41f4034480b782cd083dc0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  suspiciousRange: 15
+  stareDuration: 3
+  returnDelay: 2
 --- !u!1 &4738427963484239030
 GameObject:
   m_ObjectHideFlags: 0

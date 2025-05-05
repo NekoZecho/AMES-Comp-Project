@@ -26,14 +26,16 @@ public class Enemy_Behavior_Master : MonoBehaviour
     {
         Patrol,
         Guard,
-        Roaming
+        Roaming,
+        Suspicious
     }
 
-    private IEnemyBehavior currentBehavior;
+    public IEnemyBehavior currentBehavior { get; private set; }
 
     [Header("Component References")]
     [SerializeField] private Animator anim;
     [SerializeField] private Enemy_Sight sight;
+    public Enemy_Sight Sight => sight;
 
     [HideInInspector] public NavMeshAgent agent;
 
@@ -95,30 +97,30 @@ public class Enemy_Behavior_Master : MonoBehaviour
 
     public void SwitchBehavior(EnemyBehavior newBehavior)
     {
+        // Destroy the current behavior and assign the new one
+        if (currentBehavior != null)
+        {
+            Destroy(currentBehavior as MonoBehaviour);
+        }
+
         behavior = newBehavior;
-
-        // Disable all behaviors first
-        if (patrolBehavior) patrolBehavior.enabled = false;
-        if (guardBehavior) guardBehavior.enabled = false;
-        if (roamBehavior) roamBehavior.enabled = false;
-
-        // Enable the correct one
         switch (behavior)
         {
             case EnemyBehavior.Patrol:
-                currentBehavior = patrolBehavior;
-                if (patrolBehavior) patrolBehavior.enabled = true;
+                currentBehavior = gameObject.AddComponent<Enemy_Patrol_Behavior>();
                 break;
             case EnemyBehavior.Guard:
-                currentBehavior = guardBehavior;
-                if (guardBehavior) guardBehavior.enabled = true;
+                currentBehavior = gameObject.AddComponent<Enemy_Guard_Behavior>();
                 break;
             case EnemyBehavior.Roaming:
-                currentBehavior = roamBehavior;
-                if (roamBehavior) roamBehavior.enabled = true;
+                currentBehavior = gameObject.AddComponent<Enemy_Roam_Behavior>();
+                break;
+            case EnemyBehavior.Suspicious:
+                currentBehavior = gameObject.AddComponent<SuspiciousBehavior>();
                 break;
         }
     }
+
 
     public void SetAnimatorBool(string name, bool value)
     {
