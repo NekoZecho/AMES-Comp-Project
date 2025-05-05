@@ -113,13 +113,13 @@ public class Player_Movement : MonoBehaviour
         horizInput = Input.GetAxisRaw("Horizontal");
         vertInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-            Jump();
-
-            Invoke(nameof(JumpReset), jumpCD);
-        }
+        //if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        //{
+        //    readyToJump = false;
+        //    Jump();
+//
+        //    Invoke(nameof(JumpReset), jumpCD);
+        //}
     }
 
     void PlayerMove()
@@ -232,6 +232,8 @@ public class Player_Movement : MonoBehaviour
 
         //reset yo verticality speed
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        anim.moveRefState = "Jump";
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }

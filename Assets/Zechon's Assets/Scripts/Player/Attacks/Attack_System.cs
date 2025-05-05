@@ -162,7 +162,7 @@ public class Attack_System : MonoBehaviour
         if (Input.GetKeyDown(heavyAttack) && !stance)
         {
             EnterStance();
-            Debug.Log("Entering The Stance");
+            StartCoroutine(AllowAttacksAfterDelay());
         }
 
         if (stance)
@@ -194,7 +194,13 @@ public class Attack_System : MonoBehaviour
                 if (!stunned && !attacking && blockRecup == 0)
                 {
                     //Block();
+                    blocking = true;
                 }
+            }
+
+            else if (!Input.GetKeyDown(block))
+            {
+                blocking = false;
             }
         }
 
@@ -349,10 +355,10 @@ public class Attack_System : MonoBehaviour
 
     private void Block()
     {
-        //blocking = true;
+        blocking = true;
         stance = false;
         anim.SetBool("Stance", false);
-        //anim.SetBool("Block", true);
+        anim.SetBool("Blocking", true);
     }
 
     private void unBlock()
@@ -384,53 +390,17 @@ public class Attack_System : MonoBehaviour
         }
     }
 
-    IEnumerator SmoothLayerTransition(bool enableStance)
-    {
-        float duration = 0.5f; // duration of the transition
-        float time = 0f;
-
-        float startLayer0 = anim.GetLayerWeight(0);
-        float startLayer1 = anim.GetLayerWeight(1);
-
-        float targetLayer0 = enableStance ? 0f : 1f;
-        float targetLayer1 = enableStance ? 1f : 0f;
-
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-            float t = time / duration;
-
-            anim.SetLayerWeight(0, Mathf.Lerp(startLayer0, targetLayer0, t));
-            anim.SetLayerWeight(1, Mathf.Lerp(startLayer1, targetLayer1, t));
-
-            yield return null;
-        }
-
-        // Ensure final values are set
-        anim.SetLayerWeight(0, targetLayer0);
-        anim.SetLayerWeight(1, targetLayer1);
-    }
     private void EnterStance()
     {
-        Debug.Log("Entered Stance");
+        
         if (stance)
             return; // already in stance — don't restart everything
 
         stance = true;
         canAttackAfterStance = false;
-
-        // Stop any ongoing stance transition or timeout
-        if (stanceRoutine != null)
-            StopCoroutine(stanceRoutine);
-        if (stanceTimeoutRoutine != null)
-            StopCoroutine(stanceTimeoutRoutine);
-
-        stanceRoutine = StartCoroutine(SmoothLayerTransition(true));
         stanceTimeoutRoutine = StartCoroutine(StanceTimeout());
 
         anim.SetBool("Stance", true);
-
-        StartCoroutine(AllowAttacksAfterDelay());
     }
 
     private void ExitStance()
@@ -439,7 +409,6 @@ public class Attack_System : MonoBehaviour
         anim.SetBool("Stance", false);
         if (stanceRoutine != null)
             StopCoroutine(stanceRoutine);
-        stanceRoutine = StartCoroutine(SmoothLayerTransition(false));
     }
 
     private IEnumerator StanceTimeout()
