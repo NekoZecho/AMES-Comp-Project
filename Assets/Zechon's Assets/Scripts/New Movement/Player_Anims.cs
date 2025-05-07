@@ -46,10 +46,24 @@ public class Player_Anims : MonoBehaviour
                 //anim.SetBool("Sprinting", false);
                 anim.SetBool("Crouching", false);
                 anim.SetBool("Falling", false);
+                anim.SetBool("Sprinting", false);    
 
                 if (anim.GetBool("Walking") == false)
                 {
                     anim.SetBool("Walking", true);
+                }
+                break;
+            
+            case "sprinting":
+                anim.SetBool("Idle", false);
+                //anim.SetBool("Sprinting", false);
+                anim.SetBool("Crouching", false);
+                anim.SetBool("Falling", false);
+                anim.SetBool("Walking", false);
+
+                if (anim.GetBool("Sprinting") == false)
+                {
+                    anim.SetBool("Sprinting", true);
                 }
                 break;
 

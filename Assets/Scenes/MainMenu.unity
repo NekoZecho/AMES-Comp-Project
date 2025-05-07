@@ -7307,9 +7307,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d7c5d2c4b16bd489c348960a70d9e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minIntensity: 15
-  maxIntensity: 50
-  flickerSpeed: 0.1
 --- !u!1 &1512035594
 GameObject:
   m_ObjectHideFlags: 0
@@ -7323,8 +7320,8 @@ GameObject:
   - component: {fileID: 1512035597}
   - component: {fileID: 1512035596}
   - component: {fileID: 1512035595}
-  - component: {fileID: 1512035600}
   - component: {fileID: 1512035601}
+  - component: {fileID: 1512035600}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7448,10 +7445,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1512035594}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cd61aaa90d34bb4387eb7e74f7f4c9b, type: 3}
+  m_Script: {fileID: 11500000, guid: ef1523ce22e7fe54c866abd14ae3f023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newAnimationName: Main Menu Loop
+  button1: {fileID: 755298198}
+  button2: {fileID: 1179832641}
+  button3: {fileID: 1174274662}
+  fadeInSpeed: 1
+  delayBeforeStart: 2
 --- !u!114 &1512035601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7461,14 +7462,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1512035594}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef1523ce22e7fe54c866abd14ae3f023, type: 3}
+  m_Script: {fileID: 11500000, guid: 7cd61aaa90d34bb4387eb7e74f7f4c9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button1: {fileID: 755298198}
-  button2: {fileID: 1179832641}
-  button3: {fileID: 1174274662}
-  fadeInSpeed: 0.5
-  delayBeforeStart: 2.5
+  newAnimationName: Main Menu Loop
 --- !u!1 &1536984697
 GameObject:
   m_ObjectHideFlags: 0
@@ -10258,10 +10255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c782bdb8d961b1a41b8391cbe950325b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationX: 0
-  rotationY: 0
-  sensitivity: 1.5
-  smoothSpeed: 5
 --- !u!4 &7016980839166445061
 Transform:
   m_ObjectHideFlags: 0

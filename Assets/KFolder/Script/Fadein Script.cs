@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
-public class FadeInButtons : MonoBehaviour
+public class FadeinScript : MonoBehaviour
 {
     public Button button1;
     public Button button2;

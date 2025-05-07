@@ -19,6 +19,7 @@ public class AnimationEventSwap : MonoBehaviour
         if (animator != null && !string.IsNullOrEmpty(newAnimationName))
         {
             animator.Play(newAnimationName);
+            
         }
     }
 }
