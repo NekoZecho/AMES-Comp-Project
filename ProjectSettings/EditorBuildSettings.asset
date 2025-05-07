@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Zechon's Assets/Test Scenes/Test Range.unity
-    guid: b0b2beec91798a548a52f45d959a3759
+    path: Assets/Scenes/MainMenu.unity
+    guid: 5892ea8c28380ba4fb1e7b772e95d125
+  - enabled: 1
+    path: Assets/KFolder/TestingArc.unity
+    guid: 439a83f835e442947ab7c49a5e8c8423
   m_configObjects: {}
